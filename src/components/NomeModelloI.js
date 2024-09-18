@@ -10,6 +10,7 @@ function ModelloInput({
   setShowAnnoProd,
   setNomeModello1,
   setIdModello1,
+  setShowPezzoRic
 }) {
   const [nomeModello, setNomeModello] = useState("");
   const [idModello, setIdModello] = useState("");
@@ -74,6 +75,7 @@ function ModelloInput({
         onChange={(event, newValue) => {
           setValoreSelezionato(newValue ? newValue.toUpperCase() : "");
           setShowAnnoProd(false);
+          setShowPezzoRic(false);
         }} // Aggiorna il valore selezionato in maiuscolo
         inputValue={nomeModello}
         onInputChange={handleInputChange} // Aggiorna l'input mentre si digita e converte in maiuscolo

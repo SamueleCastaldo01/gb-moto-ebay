@@ -48,7 +48,7 @@ function AnnoDiProduzioneI({ annoProduzione, setShowPezzoRic, setAnnoDiProduzion
         freeSolo
         options={annoProduzione} // Passiamo i modelli come opzioni
         value={valoreSelezionato}
-        onChange={(event, newValue) => setValoreSelezionato(newValue ? newValue.toUpperCase() : "")} // Aggiorna il valore selezionato in maiuscolo
+        onChange={(event, newValue) => {setValoreSelezionato(newValue ? newValue.toUpperCase() : ""); setShowPezzoRic(false)} } // Aggiorna il valore selezionato in maiuscolo
         inputValue={annoDiProduzione}
         onInputChange={handleInputChange} // Aggiorna l'input mentre si digita e converte in maiuscolo
         renderInput={(params) => (

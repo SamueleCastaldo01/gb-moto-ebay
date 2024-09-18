@@ -95,6 +95,7 @@ function Homepage() {
             setNomeModello1={setNomeModello}
             setIdModello1={setIdModello}
             setShowAnnoProd={setShowAnnoProd}
+            setShowPezzoRic={setShowPezzoRic}
           />
 
           {showAnnoProd && (
