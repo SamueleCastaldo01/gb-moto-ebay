@@ -22,11 +22,12 @@ function Homepage() {
   const fetchModelli = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "nomeModelloTab"));
-      const modelliList = querySnapshot.docs.map(
-        (doc) => doc.data().nomeModello.toUpperCase() // Trasforma tutto in maiuscolo
-      );
+      const modelliList = querySnapshot.docs.map((doc) => ({
+        nomeModello: doc.data().nomeModello.toUpperCase(),
+        id: doc.id, // Recupera anche l'ID del documento
+      }));
       // Ordina i modelli in ordine alfabetico
-      const sortedModelli = modelliList.sort((a, b) => a.localeCompare(b));
+      const sortedModelli = modelliList.sort((a, b) => a.nomeModello.localeCompare(b.nomeModello));
       setModelli(sortedModelli); // Popola lo stato con i modelli ordinati
     } catch (error) {
       console.error("Errore nel recupero dei modelli: ", error);
@@ -87,6 +88,7 @@ function Homepage() {
               <AnnoDiProduzioneI
                 annoProduzione={annoProduzione}
                 nomeModello={nomeModello}
+                idModello={idModello}
                 setAnnoDiProduzione={setAnnoDiProduzione}
                 setShowAnnoProd={setShowAnnoProd}
               />

@@ -4,8 +4,15 @@ import { TextField, Button, Autocomplete } from "@mui/material";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
 
-function ModelloInput({ modelli, setModelli, setShowAnnoProd, setNomeModello1, setIdModello }) {
+function ModelloInput({
+  modelli,
+  setModelli,
+  setShowAnnoProd,
+  setNomeModello1,
+  setIdModello1,
+}) {
   const [nomeModello, setNomeModello] = useState("");
+  const [idModello, setIdModello] = useState("");
   const [valoreSelezionato, setValoreSelezionato] = useState(""); // Per tenere traccia del valore selezionato
 
   const handleInputChange = (event, newInputValue) => {
@@ -14,18 +21,24 @@ function ModelloInput({ modelli, setModelli, setShowAnnoProd, setNomeModello1, s
 
   const isValidInput = () => {
     const nomeModelloUpperCase = nomeModello.trim().toUpperCase();
-    return nomeModelloUpperCase !== "" && !modelli.includes(nomeModelloUpperCase);
+    return (
+      nomeModelloUpperCase !== "" && !modelli.includes(nomeModelloUpperCase)
+    );
   };
 
   const handleAddModello = async () => {
     const nomeModelloUpperCase = nomeModello.trim().toUpperCase();
 
-    if (nomeModelloUpperCase !== "" && !modelli.includes(nomeModelloUpperCase)) {
+    if (
+      nomeModelloUpperCase !== "" &&
+      !modelli.includes(nomeModelloUpperCase)
+    ) {
       try {
         const docRef = await addDoc(collection(db, "nomeModelloTab"), {
           nomeModello: nomeModelloUpperCase,
         });
         console.log("Modello aggiunto con ID: ", docRef.id);
+        setIdModello(docRef.id);
 
         setModelli((prev) => {
           const updatedModelli = [...prev, nomeModelloUpperCase].sort((a, b) =>
@@ -50,7 +63,10 @@ function ModelloInput({ modelli, setModelli, setShowAnnoProd, setNomeModello1, s
         freeSolo
         options={modelli} // Passiamo i modelli come opzioni
         value={valoreSelezionato}
-        onChange={(event, newValue) =>{setValoreSelezionato(newValue ? newValue.toUpperCase() : ""); setShowAnnoProd(false)} } // Aggiorna il valore selezionato in maiuscolo
+        onChange={(event, newValue) => {
+          setValoreSelezionato(newValue ? newValue.toUpperCase() : "");
+          setShowAnnoProd(false);
+        }} // Aggiorna il valore selezionato in maiuscolo
         inputValue={nomeModello}
         onInputChange={handleInputChange} // Aggiorna l'input mentre si digita e converte in maiuscolo
         renderInput={(params) => (
@@ -63,7 +79,7 @@ function ModelloInput({ modelli, setModelli, setShowAnnoProd, setNomeModello1, s
         )}
         filterOptions={(options, params) => {
           const inputValueUpperCase = params.inputValue.trim().toUpperCase();
-          const filtered = options.filter(option =>
+          const filtered = options.filter((option) =>
             option.toLowerCase().includes(inputValueUpperCase.toLowerCase())
           );
           if (inputValueUpperCase && !filtered.includes(inputValueUpperCase)) {
@@ -91,7 +107,11 @@ function ModelloInput({ modelli, setModelli, setShowAnnoProd, setNomeModello1, s
           variant="contained"
           color="primary"
           style={{ marginLeft: "20px" }} // Margine sinistro per spazio tra Autocomplete e pulsante
-          onClick={() => {setShowAnnoProd(true); setNomeModello1(nomeModello)}}
+          onClick={() => {
+            setShowAnnoProd(true);
+            setNomeModello1(nomeModello);
+            setIdModello1(idModello);
+          }}
         >
           Conferma
         </Button>

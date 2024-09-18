@@ -4,7 +4,7 @@ import { TextField, Button, Autocomplete } from "@mui/material";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
 
-function AnnoDiProduzioneI({ annoProduzione, setAnnoDiProduzione1, nomeModello }) {
+function AnnoDiProduzioneI({ annoProduzione, setAnnoDiProduzione1, nomeModello, idModello }) {
   const [annoDiProduzione, setAnnoDiProduzione] = useState("");
   const [valoreSelezionato, setValoreSelezionato] = useState(""); // Per tenere traccia del valore selezionato
 
@@ -27,6 +27,7 @@ function AnnoDiProduzioneI({ annoProduzione, setAnnoDiProduzione1, nomeModello }
         const docRef = await addDoc(collection(db, "annoDiProduzioneTab"), {
           annoDiProduzione: annoDiProduzioneUpperCase,
           nomeModello: nomeModello,
+          idModello: idModello,
         });
         console.log("Modello aggiunto con ID: ", docRef.id);
 
