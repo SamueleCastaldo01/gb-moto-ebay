@@ -4,7 +4,7 @@ import { TextField, Button, Autocomplete } from "@mui/material";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
 
-function PezzoDiRicambioI({ annoProduzione, setPezzoDiRicambio1, nomeModello, idModello, fetchAnnoProduzione }) {
+function PezzoDiRicambioI({ annoProduzione, nomeModello, idModello, fetchAnnoProduzione }) {
   const [pezzoDiRicambio, setPezzoDiRicambio] = useState("");
   const [valoreSelezionato, setValoreSelezionato] = useState(""); // Per tenere traccia del valore selezionato
 
