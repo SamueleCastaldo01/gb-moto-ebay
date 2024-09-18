@@ -4,28 +4,28 @@ import { TextField, Button, Autocomplete } from "@mui/material";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
 
-function AnnoDiProduzioneI({ annoProduzione, setShowPezzoRic, setAnnoDiProduzione1, nomeModello, idModello, fetchAnnoProduzione }) {
-  const [annoDiProduzione, setAnnoDiProduzione] = useState("");
+function PezzoDiRicambioI({ annoProduzione, setPezzoDiRicambio1, nomeModello, idModello, fetchAnnoProduzione }) {
+  const [pezzoDiRicambio, setPezzoDiRicambio] = useState("");
   const [valoreSelezionato, setValoreSelezionato] = useState(""); // Per tenere traccia del valore selezionato
 
   const handleInputChange = (event, newInputValue) => {
-    setAnnoDiProduzione(newInputValue.trim() ? newInputValue.toUpperCase() : "");
+    setPezzoDiRicambio(newInputValue.trim() ? newInputValue.toUpperCase() : "");
   };
 
   const isValidInput = () => {
-    const annoDiProduzioneUpperCase = annoDiProduzione.trim().toUpperCase();
-    return annoDiProduzioneUpperCase !== "" && !annoProduzione.includes(annoDiProduzioneUpperCase);
+    const pezzoDiRicambioUpperCase = pezzoDiRicambio.trim().toUpperCase();
+    return pezzoDiRicambioUpperCase !== "" && !annoProduzione.includes(pezzoDiRicambioUpperCase);
   };
 
 
   //--------------------------------------------------------------------------------
   const handleAddAnnoProd = async () => {
-    const annoDiProduzioneUpperCase = annoDiProduzione.trim().toUpperCase();
+    const pezzoDiRicambioUpperCase = pezzoDiRicambio.trim().toUpperCase();
 
-    if (annoDiProduzioneUpperCase !== "" && !annoProduzione.includes(annoDiProduzioneUpperCase)) {
+    if (pezzoDiRicambioUpperCase !== "" && !annoProduzione.includes(pezzoDiRicambioUpperCase)) {
       try {
-        const docRef = await addDoc(collection(db, "annoDiProduzioneTab"), {
-          annoDiProduzione: annoDiProduzioneUpperCase,
+        const docRef = await addDoc(collection(db, "pezzoDiRicambioTab"), {
+          pezzoDiRicambio: pezzoDiRicambioUpperCase,
           nomeModello: nomeModello,
           idModello: idModello,
         });
@@ -49,12 +49,12 @@ function AnnoDiProduzioneI({ annoProduzione, setShowPezzoRic, setAnnoDiProduzion
         options={annoProduzione} // Passiamo i modelli come opzioni
         value={valoreSelezionato}
         onChange={(event, newValue) => setValoreSelezionato(newValue ? newValue.toUpperCase() : "")} // Aggiorna il valore selezionato in maiuscolo
-        inputValue={annoDiProduzione}
+        inputValue={pezzoDiRicambio}
         onInputChange={handleInputChange} // Aggiorna l'input mentre si digita e converte in maiuscolo
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Anno di Produzione"
+            label="Pezzo di ricambio"
             variant="outlined"
             style={{ width: "300px", textTransform: "uppercase" }} // Imposta il testo del TextField in maiuscolo
           />
@@ -72,7 +72,7 @@ function AnnoDiProduzioneI({ annoProduzione, setShowPezzoRic, setAnnoDiProduzion
       />
 
       {/* Pulsante Aggiungi */}
-      {annoDiProduzione.trim() !== "" && isValidInput() && (
+      {pezzoDiRicambio.trim() !== "" && isValidInput() && (
         <Button
           variant="contained"
           color="primary"
@@ -84,12 +84,11 @@ function AnnoDiProduzioneI({ annoProduzione, setShowPezzoRic, setAnnoDiProduzion
       )}
 
       {/* Pulsante Conferma */}
-      {annoProduzione.includes(annoDiProduzione.trim().toUpperCase()) && (
+      {annoProduzione.includes(pezzoDiRicambio.trim().toUpperCase()) && (
         <Button
           variant="contained"
           color="primary"
           style={{ marginLeft: "20px" }} // Margine sinistro per spazio tra Autocomplete e pulsante
-          onClick={() => {setShowPezzoRic(true)}}
         >
           Conferma
         </Button>
@@ -99,4 +98,4 @@ function AnnoDiProduzioneI({ annoProduzione, setShowPezzoRic, setAnnoDiProduzion
   );
 }
 
-export default AnnoDiProduzioneI;
+export default PezzoDiRicambioI;

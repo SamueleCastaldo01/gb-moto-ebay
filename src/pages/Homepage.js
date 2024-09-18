@@ -6,6 +6,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
 import NomeModelloI from "../components/NomeModelloI";
 import AnnoDiProduzioneI from "../components/AnnoDiProduzioneI";
+import PezzoDiRicambioI from "../components/PezzoDiRicambio";
 
 function Homepage() {
   localStorage.setItem("naviBottom", 0);
@@ -16,6 +17,7 @@ function Homepage() {
   const [idModello, setIdModello] = useState("");
   const [nomeModello, setNomeModello] = useState("");
   const [showAnnoProd, setShowAnnoProd] = useState(false);
+  const [showPezzoRic, setShowPezzoRic] = useState(false);
 
   // Funzione per recuperare tutti i modelli dal database Firestore e ordinarli
   //------------------------------------------------------------------
@@ -98,6 +100,19 @@ function Homepage() {
           {showAnnoProd && (
             <div className="mt-5">
               <AnnoDiProduzioneI
+                annoProduzione={annoProduzione}
+                nomeModello={nomeModello}
+                idModello={idModello}
+                fetchAnnoProduzione={fetchAnnoProduzione}
+                setAnnoDiProduzione={setAnnoDiProduzione}
+                setShowPezzoRic={setShowPezzoRic}
+              />
+            </div>
+          )}
+
+  {showPezzoRic && (
+            <div className="mt-5">
+              <PezzoDiRicambioI
                 annoProduzione={annoProduzione}
                 nomeModello={nomeModello}
                 idModello={idModello}
