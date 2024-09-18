@@ -32,7 +32,7 @@ function Homepage() {
   };
 
   //------------------------------------------------------------------
-  const fetchAnnoProduzione = async (nomeModelloSelezionato) => {
+  const fetchAnnoProduzione = async () => {
     try {
       // Crea una query per filtrare per nomeModello
       const q = query(
@@ -101,6 +101,7 @@ function Homepage() {
                 annoProduzione={annoProduzione}
                 nomeModello={nomeModello}
                 idModello={idModello}
+                fetchAnnoProduzione={fetchAnnoProduzione}
                 setAnnoDiProduzione={setAnnoDiProduzione}
                 setShowAnnoProd={setShowAnnoProd}
               />

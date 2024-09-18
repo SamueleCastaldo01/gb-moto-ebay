@@ -4,7 +4,7 @@ import { TextField, Button, Autocomplete } from "@mui/material";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
 
-function AnnoDiProduzioneI({ annoProduzione, setAnnoDiProduzione1, nomeModello, idModello }) {
+function AnnoDiProduzioneI({ annoProduzione, setAnnoDiProduzione1, nomeModello, idModello, fetchAnnoProduzione }) {
   const [annoDiProduzione, setAnnoDiProduzione] = useState("");
   const [valoreSelezionato, setValoreSelezionato] = useState(""); // Per tenere traccia del valore selezionato
 
@@ -31,14 +31,7 @@ function AnnoDiProduzioneI({ annoProduzione, setAnnoDiProduzione1, nomeModello, 
         });
         console.log("Modello aggiunto con ID: ", docRef.id);
 
-        setAnnoDiProduzione1((prev) => {
-          const updatedModelli = [...prev, annoDiProduzioneUpperCase].sort((a, b) =>
-            a.localeCompare(b)
-          );
-          return updatedModelli;
-        });
-        setAnnoDiProduzione(""); // Pulisci il campo di input
-        setValoreSelezionato(""); // Pulisci il valore selezionato
+        fetchAnnoProduzione();
       } catch (e) {
         console.error("Errore durante l'aggiunta del modello: ", e);
       }
