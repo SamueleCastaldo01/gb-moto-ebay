@@ -12,26 +12,46 @@ function Homepage() {
 
   let navigate = useNavigate();
   const [modelli, setModelli] = useState([]); // Stato per i modelli esistenti
+  const [annoProduzione, setAnnoDiProduzione] = useState([]); //array con anno di produzione del modello
   const [showAnnoProd, setShowAnnoProd] = useState(false);
 
   // Funzione per recuperare tutti i modelli dal database Firestore e ordinarli
-  useEffect(() => {
-    const fetchModelli = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "nomeModelloTab"));
-        const modelliList = querySnapshot.docs.map(
-          (doc) => doc.data().nomeModello.toUpperCase() // Trasforma tutto in maiuscolo
-        );
-        // Ordina i modelli in ordine alfabetico
-        const sortedModelli = modelliList.sort((a, b) => a.localeCompare(b));
-        setModelli(sortedModelli); // Popola lo stato con i modelli ordinati
-      } catch (error) {
-        console.error("Errore nel recupero dei modelli: ", error);
-      }
-    };
 
+  const fetchModelli = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "nomeModelloTab"));
+      const modelliList = querySnapshot.docs.map(
+        (doc) => doc.data().nomeModello.toUpperCase() // Trasforma tutto in maiuscolo
+      );
+      // Ordina i modelli in ordine alfabetico
+      const sortedModelli = modelliList.sort((a, b) => a.localeCompare(b));
+      setModelli(sortedModelli); // Popola lo stato con i modelli ordinati
+    } catch (error) {
+      console.error("Errore nel recupero dei modelli: ", error);
+    }
+  };
+
+  const fetchAnnoProduzione = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "annoDiProduzioneTab"));
+      const modelliList = querySnapshot.docs.map(
+        (doc) => doc.data().annoDiProduzione.toUpperCase() // Trasforma tutto in maiuscolo
+      );
+      // Ordina i modelli in ordine alfabetico
+      const sortedAnnoDiProduzione = modelliList.sort((a, b) => a.localeCompare(b));
+      setAnnoDiProduzione(sortedAnnoDiProduzione); // Popola lo stato con i modelli ordinati
+    } catch (error) {
+      console.error("Errore nel recupero dei modelli: ", error);
+    }
+  };
+
+  useEffect(() => {
     fetchModelli();
+    if(showAnnoProd) {
+      fetchAnnoProduzione();
+    }
   }, []);
+
 
   return (
     <>
