@@ -4,7 +4,7 @@ import { TextField, Button, Autocomplete } from "@mui/material";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
 
-function ModelloInput({ modelli, setModelli, setShowAnnoProd }) {
+function ModelloInput({ modelli, setModelli, setShowAnnoProd, setNomeModello1, setIdModello }) {
   const [nomeModello, setNomeModello] = useState("");
   const [valoreSelezionato, setValoreSelezionato] = useState(""); // Per tenere traccia del valore selezionato
 
@@ -91,7 +91,7 @@ function ModelloInput({ modelli, setModelli, setShowAnnoProd }) {
           variant="contained"
           color="primary"
           style={{ marginLeft: "20px" }} // Margine sinistro per spazio tra Autocomplete e pulsante
-          onClick={() => {setShowAnnoProd(true)}}
+          onClick={() => {setShowAnnoProd(true); setNomeModello1(nomeModello)}}
         >
           Conferma
         </Button>

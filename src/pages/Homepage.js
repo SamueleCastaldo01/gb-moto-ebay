@@ -13,6 +13,8 @@ function Homepage() {
   let navigate = useNavigate();
   const [modelli, setModelli] = useState([]); // Stato per i modelli esistenti
   const [annoProduzione, setAnnoDiProduzione] = useState([]); //array con anno di produzione del modello
+  const [idModello, setIdModello] = useState("");
+  const [nomeModello, setNomeModello] = useState("");
   const [showAnnoProd, setShowAnnoProd] = useState(false);
 
   // Funzione per recuperare tutti i modelli dal database Firestore e ordinarli
@@ -75,6 +77,8 @@ function Homepage() {
           <NomeModelloI
             modelli={modelli}
             setModelli={setModelli}
+            setNomeModello1={setNomeModello}
+            setIdModello1={setIdModello}
             setShowAnnoProd={setShowAnnoProd}
           />
 
@@ -82,6 +86,7 @@ function Homepage() {
             <div className="mt-5">
               <AnnoDiProduzioneI
                 annoProduzione={annoProduzione}
+                nomeModello={nomeModello}
                 setAnnoDiProduzione={setAnnoDiProduzione}
                 setShowAnnoProd={setShowAnnoProd}
               />

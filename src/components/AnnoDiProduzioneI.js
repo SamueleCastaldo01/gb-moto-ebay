@@ -4,7 +4,7 @@ import { TextField, Button, Autocomplete } from "@mui/material";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
 
-function AnnoDiProduzioneI({ annoProduzione, setModelli }) {
+function AnnoDiProduzioneI({ annoProduzione, setAnnoDiProduzione1, nomeModello }) {
   const [annoDiProduzione, setAnnoDiProduzione] = useState("");
   const [valoreSelezionato, setValoreSelezionato] = useState(""); // Per tenere traccia del valore selezionato
 
@@ -19,17 +19,18 @@ function AnnoDiProduzioneI({ annoProduzione, setModelli }) {
 
 
   //--------------------------------------------------------------------------------
-  const handleAddModello = async () => {
+  const handleAddAnnoProd = async () => {
     const annoDiProduzioneUpperCase = annoDiProduzione.trim().toUpperCase();
 
     if (annoDiProduzioneUpperCase !== "" && !annoProduzione.includes(annoDiProduzioneUpperCase)) {
       try {
         const docRef = await addDoc(collection(db, "annoDiProduzioneTab"), {
           annoDiProduzione: annoDiProduzioneUpperCase,
+          nomeModello: nomeModello,
         });
         console.log("Modello aggiunto con ID: ", docRef.id);
 
-        setModelli((prev) => {
+        setAnnoDiProduzione1((prev) => {
           const updatedModelli = [...prev, annoDiProduzioneUpperCase].sort((a, b) =>
             a.localeCompare(b)
           );
@@ -81,7 +82,7 @@ function AnnoDiProduzioneI({ annoProduzione, setModelli }) {
           variant="contained"
           color="primary"
           style={{ marginLeft: "20px" }} // Margine sinistro per spazio tra Autocomplete e pulsante
-          onClick={handleAddModello}
+          onClick={handleAddAnnoProd}
         >
           Aggiungi
         </Button>
@@ -93,7 +94,6 @@ function AnnoDiProduzioneI({ annoProduzione, setModelli }) {
           variant="contained"
           color="primary"
           style={{ marginLeft: "20px" }} // Margine sinistro per spazio tra Autocomplete e pulsante
-          onClick={handleAddModello}
         >
           Conferma
         </Button>
