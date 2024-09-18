@@ -72,16 +72,16 @@ function PezzoDiRicambioI({ annoProduzione, nomeModello, idModello, fetchAnnoPro
       />
 
       {/* Pulsante Aggiungi */}
-      {pezzoDiRicambio.trim() !== "" && isValidInput() && (
+     
         <Button
           variant="contained"
           color="primary"
           style={{ marginLeft: "20px" }} // Margine sinistro per spazio tra Autocomplete e pulsante
-          onClick={handleAddAnnoProd}
+          onClick={() => {}}
         >
-          Aggiungi
+          Nuovo
         </Button>
-      )}
+    
 
       {/* Pulsante Conferma */}
       {annoProduzione.includes(pezzoDiRicambio.trim().toUpperCase()) && (
