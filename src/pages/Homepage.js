@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
 import NomeModelloI from "../components/NomeModelloI";
 import AnnoDiProduzioneI from "../components/AnnoDiProduzioneI";
@@ -18,7 +18,7 @@ function Homepage() {
   const [showAnnoProd, setShowAnnoProd] = useState(false);
 
   // Funzione per recuperare tutti i modelli dal database Firestore e ordinarli
-
+  //------------------------------------------------------------------
   const fetchModelli = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "nomeModelloTab"));
@@ -31,26 +31,41 @@ function Homepage() {
     }
   };
 
-  const fetchAnnoProduzione = async () => {
+  //------------------------------------------------------------------
+  const fetchAnnoProduzione = async (nomeModelloSelezionato) => {
     try {
-      const querySnapshot = await getDocs(collection(db, "annoDiProduzioneTab"));
-      const modelliList = querySnapshot.docs.map(
-        (doc) => doc.data().annoDiProduzione.toUpperCase() // Trasforma tutto in maiuscolo
+      // Crea una query per filtrare per nomeModello
+      const q = query(
+        collection(db, "annoDiProduzioneTab"),
+        where("nomeModello", "==", nomeModello) // Filtra per nomeModello
       );
+  
+      // Esegui la query
+      const querySnapshot = await getDocs(q);
+      
+      const modelliList = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return data.annoDiProduzione ? data.annoDiProduzione.toUpperCase() : ""; // Assicura che annoDiProduzione sia presente
+      });
+  
       // Ordina i modelli in ordine alfabetico
-      const sortedAnnoDiProduzione = modelliList.sort((a, b) => a.localeCompare(b));
+      const sortedAnnoDiProduzione = modelliList.sort((a, b) =>
+        a.localeCompare(b)
+      );
+  
       setAnnoDiProduzione(sortedAnnoDiProduzione); // Popola lo stato con i modelli ordinati
     } catch (error) {
       console.error("Errore nel recupero dei modelli: ", error);
     }
   };
-
+  //------------------------------------------------------------------
   useEffect(() => {
     fetchModelli();
-    if(showAnnoProd) {
-      fetchAnnoProduzione();
-    }
   }, []);
+
+  useEffect(() => {
+    fetchAnnoProduzione();
+  },[nomeModello])
 
 
   return (

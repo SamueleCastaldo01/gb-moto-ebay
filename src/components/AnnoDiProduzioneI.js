@@ -48,6 +48,7 @@ function AnnoDiProduzioneI({ annoProduzione, setAnnoDiProduzione1, nomeModello, 
   };
 
   return (
+    <>
     <div className="d-flex" style={{ alignItems: "center" }}>
       {/* Autocomplete */}
       <Autocomplete
@@ -100,6 +101,7 @@ function AnnoDiProduzioneI({ annoProduzione, setAnnoDiProduzione1, nomeModello, 
         </Button>
       )}
     </div>
+    </>
   );
 }
 
