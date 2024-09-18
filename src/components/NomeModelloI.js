@@ -1,5 +1,5 @@
 // ModelloInput.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Autocomplete } from "@mui/material";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
@@ -15,10 +15,12 @@ function ModelloInput({
   const [idModello, setIdModello] = useState("");
   const [valoreSelezionato, setValoreSelezionato] = useState(""); // Per tenere traccia del valore selezionato
 
+  // Funzione per gestire l'input e trasformare tutto in maiuscolo
   const handleInputChange = (event, newInputValue) => {
     setNomeModello(newInputValue.trim() ? newInputValue.toUpperCase() : "");
   };
 
+  // Controlla se l'input è valido
   const isValidInput = () => {
     const nomeModelloUpperCase = nomeModello.trim().toUpperCase();
     return (
@@ -26,13 +28,11 @@ function ModelloInput({
     );
   };
 
+  // Funzione per aggiungere il modello al database
   const handleAddModello = async () => {
     const nomeModelloUpperCase = nomeModello.trim().toUpperCase();
 
-    if (
-      nomeModelloUpperCase !== "" &&
-      !modelli.includes(nomeModelloUpperCase)
-    ) {
+    if (nomeModelloUpperCase !== "" && !modelli.includes(nomeModelloUpperCase)) {
       try {
         const docRef = await addDoc(collection(db, "nomeModelloTab"), {
           nomeModello: nomeModelloUpperCase,
@@ -55,6 +55,14 @@ function ModelloInput({
       console.log("Nome modello vuoto, contiene solo spazi o già esistente.");
     }
   };
+
+  // Filtro per assicurarsi che modelli contenga solo stringhe
+  useEffect(() => {
+    if (modelli && modelli.length > 0) {
+      const validModelli = modelli.filter((modello) => typeof modello === "string");
+      setModelli(validModelli);
+    }
+  }, [modelli, setModelli]);
 
   return (
     <div className="d-flex" style={{ alignItems: "center" }}>
@@ -79,9 +87,15 @@ function ModelloInput({
         )}
         filterOptions={(options, params) => {
           const inputValueUpperCase = params.inputValue.trim().toUpperCase();
-          const filtered = options.filter((option) =>
-            option.toLowerCase().includes(inputValueUpperCase.toLowerCase())
-          );
+          const filtered = options.filter((option) => {
+            // Controlla se l'opzione è una stringa prima di usare toLowerCase
+            if (typeof option === "string") {
+              return option.toLowerCase().includes(inputValueUpperCase.toLowerCase());
+            }
+            return false; // Escludi se non è una stringa
+          });
+
+          // Aggiungi l'input digitato se non esiste già tra le opzioni
           if (inputValueUpperCase && !filtered.includes(inputValueUpperCase)) {
             filtered.push(inputValueUpperCase);
           }
