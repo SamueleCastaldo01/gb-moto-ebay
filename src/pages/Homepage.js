@@ -81,8 +81,8 @@ function Homepage() {
           {showAnnoProd && (
             <div className="mt-5">
               <AnnoDiProduzioneI
-                modelli={modelli}
-                setModelli={setModelli}
+                annoProduzione={annoProduzione}
+                setAnnoDiProduzione={setAnnoDiProduzione}
                 setShowAnnoProd={setShowAnnoProd}
               />
             </div>

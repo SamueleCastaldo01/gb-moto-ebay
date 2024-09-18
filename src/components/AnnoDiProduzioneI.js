@@ -4,7 +4,7 @@ import { TextField, Button, Autocomplete } from "@mui/material";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
 
-function AnnoDiProduzioneI({ modelli, setModelli }) {
+function AnnoDiProduzioneI({ annoProduzione, setModelli }) {
   const [annoDiProduzione, setAnnoDiProduzione] = useState("");
   const [valoreSelezionato, setValoreSelezionato] = useState(""); // Per tenere traccia del valore selezionato
 
@@ -14,7 +14,7 @@ function AnnoDiProduzioneI({ modelli, setModelli }) {
 
   const isValidInput = () => {
     const annoDiProduzioneUpperCase = annoDiProduzione.trim().toUpperCase();
-    return annoDiProduzioneUpperCase !== "" && !modelli.includes(annoDiProduzioneUpperCase);
+    return annoDiProduzioneUpperCase !== "" && !annoProduzione.includes(annoDiProduzioneUpperCase);
   };
 
 
@@ -22,7 +22,7 @@ function AnnoDiProduzioneI({ modelli, setModelli }) {
   const handleAddModello = async () => {
     const annoDiProduzioneUpperCase = annoDiProduzione.trim().toUpperCase();
 
-    if (annoDiProduzioneUpperCase !== "" && !modelli.includes(annoDiProduzioneUpperCase)) {
+    if (annoDiProduzioneUpperCase !== "" && !annoProduzione.includes(annoDiProduzioneUpperCase)) {
       try {
         const docRef = await addDoc(collection(db, "annoDiProduzioneTab"), {
           annoDiProduzione: annoDiProduzioneUpperCase,
@@ -50,7 +50,7 @@ function AnnoDiProduzioneI({ modelli, setModelli }) {
       {/* Autocomplete */}
       <Autocomplete
         freeSolo
-        options={modelli} // Passiamo i modelli come opzioni
+        options={annoProduzione} // Passiamo i modelli come opzioni
         value={valoreSelezionato}
         onChange={(event, newValue) => setValoreSelezionato(newValue ? newValue.toUpperCase() : "")} // Aggiorna il valore selezionato in maiuscolo
         inputValue={annoDiProduzione}
@@ -88,7 +88,7 @@ function AnnoDiProduzioneI({ modelli, setModelli }) {
       )}
 
       {/* Pulsante Conferma */}
-      {modelli.includes(annoDiProduzione.trim().toUpperCase()) && (
+      {annoProduzione.includes(annoDiProduzione.trim().toUpperCase()) && (
         <Button
           variant="contained"
           color="primary"
