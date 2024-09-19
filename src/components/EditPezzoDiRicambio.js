@@ -4,7 +4,7 @@ import { Button, Form, Row, Col, Alert, Modal as BootstrapModal } from "react-bo
 import { db } from "../firebase-config"; // Importa la configurazione Firebase
 import { doc, updateDoc, deleteDoc, query, where, getDocs, collection } from "firebase/firestore"; // Funzioni per aggiornare e cercare documenti
 
-export function EditPezzoDiRicambio({ pezzo, show, onHide, fetchPezziDiRicambio, setPezzo }) {
+export function EditPezzoDiRicambio({ pezzo, show, onHide, fetchPezziDiRicambio, setPezzo, updateState, setUpdateState }) {
   const [categoria, setCategoria] = useState("");
   const [descrizioni, setDescrizioni] = useState([{ stato: "", descrizione: "" }]);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -88,7 +88,6 @@ export function EditPezzoDiRicambio({ pezzo, show, onHide, fetchPezziDiRicambio,
       return;
     }
 
-    // Se non ci sono errori, inviamo i dati aggiornati a Firebase
     try {
       const pezzoRef = doc(db, "pezzoDiRicambioTab", pezzoId); // Riferimento al documento da aggiornare
       await updateDoc(pezzoRef, {
@@ -99,12 +98,19 @@ export function EditPezzoDiRicambio({ pezzo, show, onHide, fetchPezziDiRicambio,
         })), // Aggiorniamo l'array di descrizioni
       });
 
+      setUpdateState(updateState +1)
       onHide(); // Chiude il modal dopo l'aggiornamento
+      fetchPezziDiRicambio(); // Aggiorna l'elenco dei pezzi di ricambio
+
+      // Chiama la funzione di aggiornamento per aggiornare gli stati del ricambio
+
+
     } catch (error) {
       console.error("Errore durante l'aggiornamento dei dati su Firebase: ", error);
       setErrorMessage("Errore durante l'aggiornamento dei dati.");
     }
   };
+
 
   // Funzione per gestire l'eliminazione del pezzo di ricambio
   const handleDelete = async () => {

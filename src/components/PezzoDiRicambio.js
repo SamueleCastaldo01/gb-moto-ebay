@@ -3,11 +3,26 @@ import React, { useState, useEffect } from "react";
 import { TextField, Button, Autocomplete } from "@mui/material";
 import { StatoRicambio } from "./StatoRicambio";
 
-function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit, setNomePezzoRicambioSel, nomePezzoDiRicambioSel, setStatoSel,  statoSel}) {
+function PezzoDiRicambioI({
+  pezziDiRicambio,
+  setModalShow,
+  setModalShowEdit,
+  setNomePezzoRicambioSel,
+  nomePezzoDiRicambioSel,
+  setStatoSel,
+  statoSel,
+  updateState
+}) {
   const [pezzoDiRicambio, setPezzoDiRicambio] = useState("");
 
   const handleInputChange = (event, newInputValue) => {
     setPezzoDiRicambio(newInputValue.trim() ? newInputValue.toUpperCase() : "");
+  };
+
+  const handleUpdateStati = () => {
+    // Quando questo viene chiamato, forza l'aggiornamento degli stati nel componente StatoRicambio
+    setNomePezzoRicambioSel("");
+    setNomePezzoRicambioSel(nomePezzoDiRicambioSel); // Forza il refresh degli stati
   };
 
   //--------------------------------------------------------------------------------
@@ -21,9 +36,8 @@ function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit, set
           options={pezziDiRicambio} // Passiamo i modelli come opzioni
           value={nomePezzoDiRicambioSel}
           onChange={(event, newValue) => {
-          setNomePezzoRicambioSel(newValue ? newValue.toUpperCase() : "")
-          }  
-          } // Aggiorna il valore selezionato in maiuscolo
+            setNomePezzoRicambioSel(newValue ? newValue.toUpperCase() : "");
+          }} // Aggiorna il valore selezionato in maiuscolo
           inputValue={pezzoDiRicambio}
           onInputChange={handleInputChange} // Aggiorna l'input mentre si digita e converte in maiuscolo
           renderInput={(params) => (
@@ -68,7 +82,9 @@ function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit, set
               variant="contained"
               color="secondary"
               style={{ marginLeft: "20px" }}
-              onClick={() => {setModalShowEdit(true)}}
+              onClick={() => {
+                setModalShowEdit(true);
+              }}
             >
               Modifica
             </Button>
@@ -84,11 +100,16 @@ function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit, set
       </div>
 
       <div className=" d-flex align-content-start mt-3">
-      {pezziDiRicambio.includes(pezzoDiRicambio.trim().toUpperCase()) && (
-         <StatoRicambio nomePezzoDiRicambioSel={nomePezzoDiRicambioSel} statoSel={statoSel} setStatoSel={setStatoSel}/>
-      )}
+        {pezziDiRicambio.includes(pezzoDiRicambio.trim().toUpperCase()) && (
+          <StatoRicambio
+            nomePezzoDiRicambioSel={nomePezzoDiRicambioSel}
+            statoSel={statoSel}
+            setStatoSel={setStatoSel}
+            onUpdate={handleUpdateStati}
+            updateState={updateState}
+          />
+        )}
       </div>
-
     </>
   );
 }

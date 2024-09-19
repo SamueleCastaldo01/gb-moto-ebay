@@ -21,6 +21,7 @@ function Homepage() {
   const [nomeModello, setNomeModello] = useState("");
   const [nomePezzoRicambioSel, setNomePezzoRicambioSel] = useState("");
   const [statoSel, setStatoSel] = useState("");
+  const [updateState, setUpdateState] = useState(0);
   const [showAnnoProd, setShowAnnoProd] = useState(false);
   const [showPezzoRic, setShowPezzoRic] = useState(false);
   const [modalShow, setModalShow] = useState(false);
@@ -159,6 +160,7 @@ function Homepage() {
                 nomePezzoDiRicambioSel={nomePezzoRicambioSel}
                 setNomePezzoRicambioSel={setNomePezzoRicambioSel}
                 setStatoSel={setStatoSel}
+                updateState={updateState}
                 statoSel={statoSel}
               />
             </div>
@@ -178,6 +180,8 @@ function Homepage() {
           pezzo={nomePezzoRicambioSel}
           setPezzo={setNomePezzoRicambioSel}
           show={modalShowEdit}
+          updateState={updateState}
+          setUpdateState={setUpdateState}
           fetchPezziDiRicambio={fetchPezziDiRicambio}
           onHide={() => setModalShowEdit(false)}
           />
