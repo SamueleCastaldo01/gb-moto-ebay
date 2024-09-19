@@ -104,7 +104,7 @@ function Homepage() {
 
   useEffect(() => {
     fetchPezzoDiRicambio();
-  }, [nomePezzoRicambio]);
+  }, []);
 
   return (
     <>
@@ -151,18 +151,14 @@ function Homepage() {
             <div className="mt-5">
               <PezzoDiRicambioI
                 pezziDiRicambio={pezziDiRicambio}
-                nomeModello={nomeModello}
-                idModello={idModello}
-                fetchAnnoProduzione={fetchAnnoProduzione}
-                setAnnoDiProduzione={setAnnoDiProduzione}
                 setModalShow={setModalShow}
-                setShowAnnoProd={setShowAnnoProd}
               />
             </div>
           )}
 
           <InsPezzoDiRicambio
             show={modalShow}
+            fetchPezzoDiRicambio={fetchPezzoDiRicambio}
             onHide={() => setModalShow(false)}
           />
         </div>

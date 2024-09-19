@@ -72,6 +72,7 @@ export function InsPezzoDiRicambio(props) {
       setCategoria("");
       setDescrizioni([{ stato: "", descrizione: "" }]);
       props.onHide(); // Chiude il modal
+      props.fetchPezzoDiRicambio();  //serve per aggiornare l'autocomplete
     } catch (error) {
       console.error("Errore durante l'invio dei dati a Firebase: ", error);
       setErrorMessage("Errore durante il salvataggio dei dati.");

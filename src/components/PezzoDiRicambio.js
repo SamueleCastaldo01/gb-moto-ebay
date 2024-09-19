@@ -4,7 +4,7 @@ import { TextField, Button, Autocomplete } from "@mui/material";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
 
-function PezzoDiRicambioI({ pezziDiRicambio, nomeModello, idModello, fetchAnnoProduzione, setModalShow }) {
+function PezzoDiRicambioI({ pezziDiRicambio, setModalShow }) {
   const [pezzoDiRicambio, setPezzoDiRicambio] = useState("");
   const [valoreSelezionato, setValoreSelezionato] = useState(""); // Per tenere traccia del valore selezionato
 
@@ -19,26 +19,7 @@ function PezzoDiRicambioI({ pezziDiRicambio, nomeModello, idModello, fetchAnnoPr
 
 
   //--------------------------------------------------------------------------------
-  const handleAddAnnoProd = async () => {
-    const pezzoDiRicambioUpperCase = pezzoDiRicambio.trim().toUpperCase();
 
-    if (pezzoDiRicambioUpperCase !== "" && !pezziDiRicambio.includes(pezzoDiRicambioUpperCase)) {
-      try {
-        const docRef = await addDoc(collection(db, "pezzoDiRicambioTab"), {
-          pezzoDiRicambio: pezzoDiRicambioUpperCase,
-          nomeModello: nomeModello,
-          idModello: idModello,
-        });
-        console.log("Modello aggiunto con ID: ", docRef.id);
-
-        fetchAnnoProduzione();
-      } catch (e) {
-        console.error("Errore durante l'aggiunta del modello: ", e);
-      }
-    } else {
-      console.log("Nome modello vuoto, contiene solo spazi o già esistente.");
-    }
-  };
 
   return (
     <>
