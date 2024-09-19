@@ -11,6 +11,7 @@ export function StatoRicambio({ nomePezzoDiRicambioSel, statoSel, setStatoSel, u
 
  const fetchStati = async () => {
     if (!nomePezzoDiRicambioSel) return; // Non fare nulla se non è selezionato un pezzo di ricambio
+    setStatoSel("")
 
     try {
       // Query per trovare il documento basato sul nome del pezzo di ricambio
