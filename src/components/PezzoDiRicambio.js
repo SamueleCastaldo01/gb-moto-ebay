@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { TextField, Button, Autocomplete } from "@mui/material";
 import { StatoRicambio } from "./StatoRicambio";
 
-function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit, setNomePezzoRicambioSel, nomePezzoDiRicambioSel }) {
+function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit, setNomePezzoRicambioSel, nomePezzoDiRicambioSel, setStatoSel,  statoSel}) {
   const [pezzoDiRicambio, setPezzoDiRicambio] = useState("");
 
   const handleInputChange = (event, newInputValue) => {
@@ -85,7 +85,7 @@ function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit, set
 
       <div className=" d-flex align-content-start mt-3">
       {pezziDiRicambio.includes(pezzoDiRicambio.trim().toUpperCase()) && (
-         <StatoRicambio nomePezzoDiRicambioSel={nomePezzoDiRicambioSel}/>
+         <StatoRicambio nomePezzoDiRicambioSel={nomePezzoDiRicambioSel} statoSel={statoSel} setStatoSel={setStatoSel}/>
       )}
       </div>
 

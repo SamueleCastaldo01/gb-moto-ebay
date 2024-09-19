@@ -4,7 +4,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import { db } from "../firebase-config"; // Importa la configurazione Firebase
 import { query, collection, where, getDocs } from "firebase/firestore"; // Funzioni per leggere documenti
 
-export function StatoRicambio({ nomePezzoDiRicambioSel }) {
+export function StatoRicambio({ nomePezzoDiRicambioSel, statoSel, setStatoSel }) {
   const [stati, setStati] = useState([]); // Stato per memorizzare gli stati
   const [loading, setLoading] = useState(true); // Stato per indicare il caricamento dei dati
 
@@ -43,8 +43,12 @@ export function StatoRicambio({ nomePezzoDiRicambioSel }) {
     <>
       {!loading && stati.length > 0 && (
         <Autocomplete
-          freeSolo
+          disableCloseOnSelect
           options={stati} // Passiamo gli stati come opzioni
+          value={statoSel}
+          onChange={(event, newValue) => setStatoSel(newValue || "")} // Usa l'opzione selezionata
+          inputValue={statoSel}
+          onInputChange={(event, newInputValue) => setStatoSel(newInputValue.toUpperCase())} // Trasforma in uppercase
           renderInput={(params) => (
             <TextField
               {...params}
@@ -53,6 +57,12 @@ export function StatoRicambio({ nomePezzoDiRicambioSel }) {
               style={{ width: "300px" }}
             />
           )}
+          filterOptions={(options, params) => {
+            const inputValueUpperCase = params.inputValue.trim().toUpperCase();
+            return options.filter((option) =>
+              option.toUpperCase().includes(inputValueUpperCase)
+            );
+          }}
         />
       )}
     </>

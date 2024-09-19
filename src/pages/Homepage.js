@@ -20,6 +20,7 @@ function Homepage() {
   const [idModello, setIdModello] = useState("");
   const [nomeModello, setNomeModello] = useState("");
   const [nomePezzoRicambioSel, setNomePezzoRicambioSel] = useState("");
+  const [statoSel, setStatoSel] = useState("");
   const [showAnnoProd, setShowAnnoProd] = useState(false);
   const [showPezzoRic, setShowPezzoRic] = useState(false);
   const [modalShow, setModalShow] = useState(false);
@@ -157,6 +158,8 @@ function Homepage() {
                 setModalShowEdit={setModalShowEdit}
                 nomePezzoDiRicambioSel={nomePezzoRicambioSel}
                 setNomePezzoRicambioSel={setNomePezzoRicambioSel}
+                setStatoSel={setStatoSel}
+                statoSel={statoSel}
               />
             </div>
           )}
