@@ -4,7 +4,7 @@ import { TextField, Button, Autocomplete } from "@mui/material";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
 
-function AnnoDiProduzioneI({ annoProduzione, setShowPezzoRic, setAnnoDiProduzione1, nomeModello, idModello, fetchAnnoProduzione }) {
+function AnnoDiProduzioneI({ annoProduzione, setShowPezzoRic, setAnnoDiProduzione1, nomeModello, idModello, fetchAnnoProduzione, setAnnoDiProduzioneSel }) {
   const [annoDiProduzione, setAnnoDiProduzione] = useState("");
   const [valoreSelezionato, setValoreSelezionato] = useState(""); // Per tenere traccia del valore selezionato
 
@@ -48,7 +48,9 @@ function AnnoDiProduzioneI({ annoProduzione, setShowPezzoRic, setAnnoDiProduzion
         freeSolo
         options={annoProduzione} // Passiamo i modelli come opzioni
         value={valoreSelezionato}
-        onChange={(event, newValue) => {setValoreSelezionato(newValue ? newValue.toUpperCase() : ""); setShowPezzoRic(false)} } // Aggiorna il valore selezionato in maiuscolo
+        onChange={(event, newValue) => {setValoreSelezionato(newValue ? newValue.toUpperCase() : ""); setShowPezzoRic(false);
+            setAnnoDiProduzioneSel(newValue ? newValue.toUpperCase() : "")
+        } } // Aggiorna il valore selezionato in maiuscolo
         inputValue={annoDiProduzione}
         onInputChange={handleInputChange} // Aggiorna l'input mentre si digita e converte in maiuscolo
         renderInput={(params) => (

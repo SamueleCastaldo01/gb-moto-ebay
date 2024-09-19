@@ -9,6 +9,7 @@ import AnnoDiProduzioneI from "../components/AnnoDiProduzioneI";
 import PezzoDiRicambioI from "../components/PezzoDiRicambio";
 import { InsPezzoDiRicambio } from "../components/InsPezzoRicambio";
 import { EditPezzoDiRicambio } from "../components/EditPezzoDiRicambio";
+import { TitoloInserzioneEbay } from "../components/TitoloInserzioneEbay";
 
 function Homepage() {
   localStorage.setItem("naviBottom", 0);
@@ -19,6 +20,7 @@ function Homepage() {
   const [annoProduzione, setAnnoDiProduzione] = useState([]); //array con anno di produzione del modello
   const [idModello, setIdModello] = useState("");
   const [nomeModello, setNomeModello] = useState("");
+  const [annoDiProduzioneSel, setAnnoDiProduzioneSel] = useState("");
   const [nomePezzoRicambioSel, setNomePezzoRicambioSel] = useState("");
   const [statoSel, setStatoSel] = useState("");
   const [updateState, setUpdateState] = useState(0);
@@ -144,6 +146,7 @@ function Homepage() {
                 annoProduzione={annoProduzione}
                 nomeModello={nomeModello}
                 idModello={idModello}
+                setAnnoDiProduzioneSel={setAnnoDiProduzioneSel}
                 fetchAnnoProduzione={fetchAnnoProduzione}
                 setAnnoDiProduzione={setAnnoDiProduzione}
                 setShowPezzoRic={setShowPezzoRic}
@@ -186,6 +189,15 @@ function Homepage() {
           onHide={() => setModalShowEdit(false)}
           />
         }
+
+
+        {/**OUTPUT++++++++++++++++++++++++++++++++++++++++++++ */}
+        <TitoloInserzioneEbay
+            nomePezzoRicambioSel={nomePezzoRicambioSel}
+            nomeModello={nomeModello}
+            annoProduzione={annoDiProduzioneSel}
+          />
+
 
         </div>
       </motion.div>
