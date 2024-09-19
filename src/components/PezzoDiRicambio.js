@@ -1,8 +1,7 @@
 // ModelloInput.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Autocomplete } from "@mui/material";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
+import { StatoRicambio } from "./StatoRicambio";
 
 function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit, setNomePezzoRicambioSel, nomePezzoDiRicambioSel }) {
   const [pezzoDiRicambio, setPezzoDiRicambio] = useState("");
@@ -83,6 +82,13 @@ function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit, set
           </>
         )}
       </div>
+
+      <div className=" d-flex align-content-start mt-3">
+      {pezziDiRicambio.includes(pezzoDiRicambio.trim().toUpperCase()) && (
+         <StatoRicambio nomePezzoDiRicambioSel={nomePezzoDiRicambioSel}/>
+      )}
+      </div>
+
     </>
   );
 }
