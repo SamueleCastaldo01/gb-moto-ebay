@@ -4,9 +4,8 @@ import { TextField, Button, Autocomplete } from "@mui/material";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
 
-function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit, setNomePezzoRicambioSel }) {
+function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit, setNomePezzoRicambioSel, nomePezzoDiRicambioSel }) {
   const [pezzoDiRicambio, setPezzoDiRicambio] = useState("");
-  const [valoreSelezionato, setValoreSelezionato] = useState(""); // Per tenere traccia del valore selezionato
 
   const handleInputChange = (event, newInputValue) => {
     setPezzoDiRicambio(newInputValue.trim() ? newInputValue.toUpperCase() : "");
@@ -21,8 +20,8 @@ function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit, set
         <Autocomplete
           freeSolo
           options={pezziDiRicambio} // Passiamo i modelli come opzioni
-          value={valoreSelezionato}
-          onChange={(event, newValue) => {setValoreSelezionato(newValue ? newValue.toUpperCase() : "");
+          value={nomePezzoDiRicambioSel}
+          onChange={(event, newValue) => {
           setNomePezzoRicambioSel(newValue ? newValue.toUpperCase() : "")
           }  
           } // Aggiorna il valore selezionato in maiuscolo
@@ -54,7 +53,7 @@ function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit, set
         {/* Pulsante Aggiungi */}
         <Button
           variant="contained"
-          color="primary"
+          color="warning"
           style={{ marginLeft: "20px" }} // Margine sinistro per spazio tra Autocomplete e pulsante
           onClick={() => {
             setModalShow(true);
@@ -68,7 +67,7 @@ function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit, set
           <>
             <Button
               variant="contained"
-              color="primary"
+              color="secondary"
               style={{ marginLeft: "20px" }}
               onClick={() => {setModalShowEdit(true)}}
             >
@@ -76,7 +75,7 @@ function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit, set
             </Button>
             <Button
               variant="contained"
-              color="primary"
+              color="success"
               style={{ marginLeft: "20px" }} // Margine sinistro per spazio tra Autocomplete e pulsante
             >
               Conferma

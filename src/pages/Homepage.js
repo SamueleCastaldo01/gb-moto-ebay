@@ -70,7 +70,7 @@ function Homepage() {
   };
 
     //------------------------------------------------------------------
-    const fetchPezzoDiRicambio = async () => {
+    const fetchPezziDiRicambio = async () => {
       try {
         // Crea una query per filtrare per nomeModello
         const q = query(
@@ -105,7 +105,7 @@ function Homepage() {
   }, [nomeModello]);
 
   useEffect(() => {
-    fetchPezzoDiRicambio();
+    fetchPezziDiRicambio();
   }, []);
 
   return (
@@ -155,6 +155,7 @@ function Homepage() {
                 pezziDiRicambio={pezziDiRicambio}
                 setModalShow={setModalShow}
                 setModalShowEdit={setModalShowEdit}
+                nomePezzoDiRicambioSel={nomePezzoRicambioSel}
                 setNomePezzoRicambioSel={setNomePezzoRicambioSel}
               />
             </div>
@@ -163,7 +164,8 @@ function Homepage() {
         {modalShow &&
           <InsPezzoDiRicambio
             show={modalShow}
-            fetchPezzoDiRicambio={fetchPezzoDiRicambio}
+            fetchPezziDiRicambio={fetchPezziDiRicambio}
+            setNomePezzoRicambioSel={setNomePezzoRicambioSel}
             onHide={() => setModalShow(false)}
           />
         }
@@ -171,7 +173,9 @@ function Homepage() {
         {modalShowEdit &&
           <EditPezzoDiRicambio
           pezzo={nomePezzoRicambioSel}
+          setPezzo={setNomePezzoRicambioSel}
           show={modalShowEdit}
+          fetchPezziDiRicambio={fetchPezziDiRicambio}
           onHide={() => setModalShowEdit(false)}
           />
         }

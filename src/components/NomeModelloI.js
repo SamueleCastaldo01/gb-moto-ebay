@@ -121,7 +121,7 @@ function ModelloInput({
       {modelli.includes(nomeModello.trim().toUpperCase()) && (
         <Button
           variant="contained"
-          color="primary"
+          color="success"
           style={{ marginLeft: "20px" }} // Margine sinistro per spazio tra Autocomplete e pulsante
           onClick={() => {
             setShowAnnoProd(true);

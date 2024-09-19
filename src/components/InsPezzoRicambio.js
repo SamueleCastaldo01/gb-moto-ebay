@@ -85,11 +85,12 @@ export function InsPezzoDiRicambio(props) {
       });
 
       // Reset dei campi dopo l'invio
+      props.setNomePezzoRicambioSel(nomePezzoDiRicambio.toUpperCase())
       setNomePezzoDiRicambio("");
       setCategoria("");
       setDescrizioni([{ stato: "", descrizione: "" }]);
       props.onHide(); // Chiude il modal
-      props.fetchPezzoDiRicambio(); // Serve per aggiornare l'autocomplete
+      props.fetchPezziDiRicambio(); // Serve per aggiornare l'autocomplete
     } catch (error) {
       console.error("Errore durante l'invio dei dati a Firebase: ", error);
       setErrorMessage("Errore durante il salvataggio dei dati.");

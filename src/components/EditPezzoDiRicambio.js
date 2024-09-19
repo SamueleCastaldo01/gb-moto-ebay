@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
-import { Button, Form, Row, Col, Alert } from "react-bootstrap";
+import { Button, Form, Row, Col, Alert, Modal as BootstrapModal } from "react-bootstrap";
 import { db } from "../firebase-config"; // Importa la configurazione Firebase
-import { doc, updateDoc, query, where, getDocs, collection } from "firebase/firestore"; // Funzioni per aggiornare e cercare documenti
+import { doc, updateDoc, deleteDoc, query, where, getDocs, collection } from "firebase/firestore"; // Funzioni per aggiornare e cercare documenti
 
-export function EditPezzoDiRicambio({ pezzo, show, onHide }) {
+export function EditPezzoDiRicambio({ pezzo, show, onHide, fetchPezziDiRicambio, setPezzo }) {
   const [categoria, setCategoria] = useState("");
   const [descrizioni, setDescrizioni] = useState([{ stato: "", descrizione: "" }]);
   const [errorMessage, setErrorMessage] = useState(null);
   const [pezzoId, setPezzoId] = useState(null); // Stato per memorizzare l'ID del pezzo
+  const [confirmDelete, setConfirmDelete] = useState(false); // Stato per la conferma di eliminazione
 
   useEffect(() => {
     const fetchPezzoId = async () => {
@@ -105,94 +106,141 @@ export function EditPezzoDiRicambio({ pezzo, show, onHide }) {
     }
   };
 
+  // Funzione per gestire l'eliminazione del pezzo di ricambio
+  const handleDelete = async () => {
+    setErrorMessage(null);
+
+    // Conferma di eliminazione
+    if (window.confirm("Sei sicuro di voler eliminare questo pezzo di ricambio?")) {
+      try {
+        const pezzoRef = doc(db, "pezzoDiRicambioTab", pezzoId); // Riferimento al documento da eliminare
+        await deleteDoc(pezzoRef);
+
+        setPezzo("");  //autocomplete in questo modo dovrebbe essere vuoto
+        onHide(); // Chiude il modal dopo l'eliminazione
+        fetchPezziDiRicambio()  //aggiorna l'autocomplete
+      } catch (error) {
+        console.error("Errore durante l'eliminazione dei dati su Firebase: ", error);
+        setErrorMessage("Errore durante l'eliminazione dei dati.");
+      }
+    }
+  };
+
   return (
-    <Modal show={show} onHide={onHide} size="lg" centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Modifica Pezzo di Ricambio</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
-          {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-          
-          {/* Campo non modificabile */}
-          <Form.Group className="mb-3">
-            <Form.Label>Nome Pezzo di Ricambio (non modificabile)</Form.Label>
-            <Form.Control
-              type="text"
-              value={pezzo}
-              disabled // Rende il campo non modificabile
-            />
-          </Form.Group>
+    <>
+      <Modal show={show} onHide={onHide} size="lg" centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Modifica Pezzo di Ricambio</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+            
+            {/* Campo non modificabile */}
+            <Form.Group className="mb-3">
+              <Form.Label>Nome Pezzo di Ricambio (non modificabile)</Form.Label>
+              <Form.Control
+                type="text"
+                value={pezzo}
+                disabled // Rende il campo non modificabile
+              />
+            </Form.Group>
 
-          {/* Campo modificabile Categoria */}
-          <Form.Group className="mb-3">
-            <Form.Label>Categoria</Form.Label>
-            <Form.Control
-              type="text"
-              value={categoria}
-              onChange={handleCategoriaChange}
-              placeholder="Inserisci la categoria"
-            />
-          </Form.Group>
+            {/* Campo modificabile Categoria */}
+            <Form.Group className="mb-3">
+              <Form.Label>Categoria</Form.Label>
+              <Form.Control
+                type="text"
+                value={categoria}
+                onChange={handleCategoriaChange}
+                placeholder="Inserisci la categoria"
+              />
+            </Form.Group>
 
-          {/* Stato e descrizione */}
-          <div className="scroll-container">
-            {descrizioni.map((descrizioneItem, index) => (
-              <Row key={index} className="mb-3">
-                <Col>
-                  <Form.Group>
-                    <Form.Label>Stato</Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={descrizioneItem.stato}
-                      onChange={(e) =>
-                        handleDescrizioneChange(index, "stato", e.target.value)
-                      }
-                      placeholder="Inserisci lo stato (es: ottimo, decente, difetto)"
-                    />
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group>
-                    <Form.Label>Descrizione</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={2}
-                      value={descrizioneItem.descrizione}
-                      onChange={(e) =>
-                        handleDescrizioneChange(index, "descrizione", e.target.value)
-                      }
-                      placeholder="Inserisci la descrizione"
-                    />
-                  </Form.Group>
-                </Col>
-                <Col xs="auto" className="d-flex align-items-end">
-                  {index > 0 && (
-                    <Button
-                      variant="danger"
-                      onClick={() => removeDescrizione(index)}
-                    >
-                      Rimuovi
-                    </Button>
-                  )}
-                </Col>
-              </Row>
-            ))}
-          </div>
+            {/* Stato e descrizione */}
+            <div className="scroll-container">
+              {descrizioni.map((descrizioneItem, index) => (
+                <Row key={index} className="mb-3">
+                  <Col>
+                    <Form.Group>
+                      <Form.Label>Stato</Form.Label>
+                      <Form.Control
+                        type="text"
+                        value={descrizioneItem.stato}
+                        onChange={(e) =>
+                          handleDescrizioneChange(index, "stato", e.target.value)
+                        }
+                        placeholder="Inserisci lo stato (es: ottimo, decente, difetto)"
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group>
+                      <Form.Label>Descrizione</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={2}
+                        value={descrizioneItem.descrizione}
+                        onChange={(e) =>
+                          handleDescrizioneChange(index, "descrizione", e.target.value)
+                        }
+                        placeholder="Inserisci la descrizione"
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col xs="auto" className="d-flex align-items-end">
+                    {index > 0 && (
+                      <Button
+                        variant="danger"
+                        onClick={() => removeDescrizione(index)}
+                      >
+                        Rimuovi
+                      </Button>
+                    )}
+                  </Col>
+                </Row>
+              ))}
+            </div>
 
-          <Button variant="primary" onClick={addDescrizione}>
-            + Aggiungi Stato e Descrizione
+            <Button variant="primary" onClick={addDescrizione}>
+              + Aggiungi Stato e Descrizione
+            </Button>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={onHide}>
+            Chiudi
           </Button>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
-          Chiudi
-        </Button>
-        <Button variant="primary" onClick={handleUpdate}>
-          Salva Modifiche
-        </Button>
-      </Modal.Footer>
-    </Modal>
+          <Button variant="danger" onClick={() => setConfirmDelete(true)}>
+            Elimina
+          </Button>
+          <Button variant="primary" onClick={handleUpdate}>
+            Salva Modifiche
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal di conferma eliminazione */}
+      <BootstrapModal
+        show={confirmDelete}
+        onHide={() => setConfirmDelete(false)}
+        centered
+      >
+        <BootstrapModal.Header closeButton>
+          <BootstrapModal.Title>Conferma Eliminazione</BootstrapModal.Title>
+        </BootstrapModal.Header>
+        <BootstrapModal.Body>
+          Sei sicuro di voler eliminare questo pezzo di ricambio? Questa azione non può essere annullata.
+        </BootstrapModal.Body>
+        <BootstrapModal.Footer>
+          <Button variant="secondary" onClick={() => setConfirmDelete(false)}>
+            Annulla
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Conferma Eliminazione
+          </Button>
+        </BootstrapModal.Footer>
+      </BootstrapModal>
+    </>
   );
 }
