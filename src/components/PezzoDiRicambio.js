@@ -4,20 +4,12 @@ import { TextField, Button, Autocomplete } from "@mui/material";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
 
-function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit }) {
+function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit, setNomePezzoRicambioSel }) {
   const [pezzoDiRicambio, setPezzoDiRicambio] = useState("");
   const [valoreSelezionato, setValoreSelezionato] = useState(""); // Per tenere traccia del valore selezionato
 
   const handleInputChange = (event, newInputValue) => {
     setPezzoDiRicambio(newInputValue.trim() ? newInputValue.toUpperCase() : "");
-  };
-
-  const isValidInput = () => {
-    const pezzoDiRicambioUpperCase = pezzoDiRicambio.trim().toUpperCase();
-    return (
-      pezzoDiRicambioUpperCase !== "" &&
-      !pezziDiRicambio.includes(pezzoDiRicambioUpperCase)
-    );
   };
 
   //--------------------------------------------------------------------------------
@@ -30,8 +22,9 @@ function PezzoDiRicambioI({ pezziDiRicambio, setModalShow, setModalShowEdit }) {
           freeSolo
           options={pezziDiRicambio} // Passiamo i modelli come opzioni
           value={valoreSelezionato}
-          onChange={(event, newValue) =>
-            setValoreSelezionato(newValue ? newValue.toUpperCase() : "")
+          onChange={(event, newValue) => {setValoreSelezionato(newValue ? newValue.toUpperCase() : "");
+          setNomePezzoRicambioSel(newValue ? newValue.toUpperCase() : "")
+          }  
           } // Aggiorna il valore selezionato in maiuscolo
           inputValue={pezzoDiRicambio}
           onInputChange={handleInputChange} // Aggiorna l'input mentre si digita e converte in maiuscolo

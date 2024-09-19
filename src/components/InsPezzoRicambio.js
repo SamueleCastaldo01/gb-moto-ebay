@@ -38,6 +38,16 @@ export function InsPezzoDiRicambio(props) {
     return !querySnapshot.empty; // Se il risultato non è vuoto, esiste un duplicato
   };
 
+  // Funzione per validare che tutti i campi 'stato' siano compilati
+  const validateDescrizioni = () => {
+    for (const descrizione of descrizioni) {
+      if (!descrizione.stato.trim()) {
+        return "Tutti i campi 'Stato' devono essere compilati.";
+      }
+    }
+    return null;
+  };
+
   // Funzione per gestire l'invio dei dati a Firebase
   const handleSubmit = async () => {
     // Reset dell'errore
@@ -46,6 +56,13 @@ export function InsPezzoDiRicambio(props) {
     // Validazione - Nome pezzo di ricambio obbligatorio
     if (!nomePezzoDiRicambio) {
       setErrorMessage("Il nome del pezzo di ricambio è obbligatorio.");
+      return;
+    }
+
+    // Validazione - Stato obbligatorio per ogni descrizione
+    const validationError = validateDescrizioni();
+    if (validationError) {
+      setErrorMessage(validationError);
       return;
     }
 
@@ -72,7 +89,7 @@ export function InsPezzoDiRicambio(props) {
       setCategoria("");
       setDescrizioni([{ stato: "", descrizione: "" }]);
       props.onHide(); // Chiude il modal
-      props.fetchPezzoDiRicambio();  //serve per aggiornare l'autocomplete
+      props.fetchPezzoDiRicambio(); // Serve per aggiornare l'autocomplete
     } catch (error) {
       console.error("Errore durante l'invio dei dati a Firebase: ", error);
       setErrorMessage("Errore durante il salvataggio dei dati.");
@@ -80,104 +97,102 @@ export function InsPezzoDiRicambio(props) {
   };
 
   return (
-    <>
-      <Modal
-        {...props}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Inserisci Pezzo di Ricambio
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            {errorMessage && (
-              <Alert variant="danger">
-                {errorMessage}
-              </Alert>
-            )}
-            <Form.Group className="mb-3">
-              <Form.Label>Nome Pezzo di Ricambio</Form.Label>
-              <Form.Control
-                type="text"
-                value={nomePezzoDiRicambio}
-                onChange={(e) => setNomePezzoDiRicambio(e.target.value.toUpperCase())} // Converti a uppercase
-                placeholder="Inserisci il nome del pezzo di ricambio"
-                required
-              />
-            </Form.Group>
+    <Modal
+      {...props}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Inserisci Pezzo di Ricambio
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>
+          {errorMessage && (
+            <Alert variant="danger">
+              {errorMessage}
+            </Alert>
+          )}
+          <Form.Group className="mb-3">
+            <Form.Label>Nome Pezzo di Ricambio</Form.Label>
+            <Form.Control
+              type="text"
+              value={nomePezzoDiRicambio}
+              onChange={(e) => setNomePezzoDiRicambio(e.target.value.toUpperCase())} // Converti a uppercase
+              placeholder="Inserisci il nome del pezzo di ricambio"
+              required
+            />
+          </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Categoria</Form.Label>
-              <Form.Control
-                type="text"
-                value={categoria}
-                onChange={(e) => setCategoria(e.target.value.toUpperCase())} // Converti a uppercase
-                placeholder="Inserisci la categoria"
-              />
-            </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Categoria</Form.Label>
+            <Form.Control
+              type="text"
+              value={categoria}
+              onChange={(e) => setCategoria(e.target.value.toUpperCase())} // Converti a uppercase
+              placeholder="Inserisci la categoria"
+            />
+          </Form.Group>
 
-            <div className="scroll-container">
-              {descrizioni.map((descrizioneItem, index) => (
-                <Row key={index} className="mb-3">
-                  <Col>
-                    <Form.Group>
-                      <Form.Label>Stato</Form.Label>
-                      <Form.Control
-                        type="text"
-                        value={descrizioneItem.stato}
-                        onChange={(e) =>
-                          handleDescrizioneChange(index, "stato", e.target.value)
-                        }
-                        placeholder="Inserisci lo stato (es: ottimo, decente, difetto)"
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Form.Group>
-                      <Form.Label>Descrizione</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows={2}
-                        value={descrizioneItem.descrizione}
-                        onChange={(e) =>
-                          handleDescrizioneChange(index, "descrizione", e.target.value)
-                        }
-                        placeholder="Inserisci la descrizione"
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col xs="auto" className="d-flex align-items-end">
-                    {index > 0 && (
-                      <Button
-                        variant="danger"
-                        onClick={() => removeDescrizione(index)}
-                      >
-                        Rimuovi
-                      </Button>
-                    )}
-                  </Col>
-                </Row>
-              ))}
-            </div>
+          <div className="scroll-container">
+            {descrizioni.map((descrizioneItem, index) => (
+              <Row key={index} className="mb-3">
+                <Col>
+                  <Form.Group>
+                    <Form.Label>Stato</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={descrizioneItem.stato}
+                      onChange={(e) =>
+                        handleDescrizioneChange(index, "stato", e.target.value)
+                      }
+                      placeholder="Inserisci lo stato (es: ottimo, decente, difetto)"
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>Descrizione</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={2}
+                      value={descrizioneItem.descrizione}
+                      onChange={(e) =>
+                        handleDescrizioneChange(index, "descrizione", e.target.value)
+                      }
+                      placeholder="Inserisci la descrizione"
+                    />
+                  </Form.Group>
+                </Col>
+                <Col xs="auto" className="d-flex align-items-end">
+                  {index > 0 && (
+                    <Button
+                      variant="danger"
+                      onClick={() => removeDescrizione(index)}
+                    >
+                      Rimuovi
+                    </Button>
+                  )}
+                </Col>
+              </Row>
+            ))}
+          </div>
 
-            <Button variant="primary" onClick={addDescrizione}>
-              + Aggiungi Stato e Descrizione
-            </Button>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={props.onHide}>
-            Chiudi
+          <Button variant="primary" onClick={addDescrizione}>
+            + Aggiungi Stato e Descrizione
           </Button>
-          <Button variant="primary" onClick={handleSubmit}>
-            Salva
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
+        </Form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={props.onHide}>
+          Chiudi
+        </Button>
+        <Button variant="primary" onClick={handleSubmit}>
+          Salva
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 }

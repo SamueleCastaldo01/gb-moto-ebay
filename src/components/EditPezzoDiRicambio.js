@@ -1,20 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
 import { Button, Form, Row, Col, Alert } from "react-bootstrap";
 import { db } from "../firebase-config"; // Importa la configurazione Firebase
-import { doc, updateDoc } from "firebase/firestore"; // Funzioni per aggiornare il documento
+import { doc, updateDoc, query, where, getDocs, collection } from "firebase/firestore"; // Funzioni per aggiornare e cercare documenti
 
 export function EditPezzoDiRicambio({ pezzo, show, onHide }) {
-  // Inizializzo gli stati con i dati esistenti del pezzo
-  const [categoria, setCategoria] = useState(pezzo.categoria || "");
-  const [descrizioni, setDescrizioni] = useState(pezzo.descrizioni || [{ stato: "", descrizione: "" }]);
+  const [categoria, setCategoria] = useState("");
+  const [descrizioni, setDescrizioni] = useState([{ stato: "", descrizione: "" }]);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [pezzoId, setPezzoId] = useState(null); // Stato per memorizzare l'ID del pezzo
+
+  useEffect(() => {
+    const fetchPezzoId = async () => {
+      try {
+        // Trova l'ID del pezzo usando il nome
+        const pezzoQuery = query(
+          collection(db, "pezzoDiRicambioTab"),
+          where("nomePezzoDiRicambio", "==", pezzo)
+        );
+        const querySnapshot = await getDocs(pezzoQuery);
+        if (!querySnapshot.empty) {
+          const doc = querySnapshot.docs[0];
+          setPezzoId(doc.id);
+          // Carica i dati del pezzo
+          setCategoria(doc.data().categoria || "");
+          setDescrizioni(doc.data().descrizioni || [{ stato: "", descrizione: "" }]);
+        }
+      } catch (error) {
+        console.error("Errore durante il recupero dei dati del pezzo: ", error);
+        setErrorMessage("Errore durante il recupero dei dati.");
+      }
+    };
+
+    if (pezzo) {
+      fetchPezzoId();
+    }
+  }, [pezzo]);
 
   // Funzione per gestire il cambiamento di stato o descrizione di un elemento
   const handleDescrizioneChange = (index, field, value) => {
     const newDescrizioni = [...descrizioni];
-    newDescrizioni[index][field] = value;
+    newDescrizioni[index][field] = value.toUpperCase(); // Trasforma in uppercase
     setDescrizioni(newDescrizioni);
+  };
+
+  // Funzione per gestire il cambiamento della categoria
+  const handleCategoriaChange = (e) => {
+    setCategoria(e.target.value.toUpperCase()); // Trasforma in uppercase
   };
 
   // Aggiunge un nuovo campo per stato + descrizione
@@ -28,22 +60,42 @@ export function EditPezzoDiRicambio({ pezzo, show, onHide }) {
     setDescrizioni(newDescrizioni);
   };
 
+  // Funzione per validare che tutti i campi 'stato' siano compilati
+  const validateDescrizioni = () => {
+    for (const descrizione of descrizioni) {
+      if (!descrizione.stato.trim()) {
+        return "Tutti i campi 'Stato' devono essere compilati.";
+      }
+    }
+    return null;
+  };
+
   // Funzione per gestire l'aggiornamento dei dati su Firebase
   const handleUpdate = async () => {
     setErrorMessage(null);
 
-    // Validazione - categoria obbligatoria (se serve)
+    // Validazione - categoria obbligatoria
     if (!categoria) {
       setErrorMessage("La categoria è obbligatoria.");
       return;
     }
 
+    // Validazione - stato obbligatorio per ogni descrizione
+    const validationError = validateDescrizioni();
+    if (validationError) {
+      setErrorMessage(validationError);
+      return;
+    }
+
     // Se non ci sono errori, inviamo i dati aggiornati a Firebase
     try {
-      const pezzoRef = doc(db, "pezzoDiRicambioTab", pezzo.id); // Riferimento al documento da aggiornare
+      const pezzoRef = doc(db, "pezzoDiRicambioTab", pezzoId); // Riferimento al documento da aggiornare
       await updateDoc(pezzoRef, {
         categoria: categoria,
-        descrizioni: descrizioni, // Aggiorniamo l'array di descrizioni
+        descrizioni: descrizioni.map(d => ({
+          stato: d.stato.toUpperCase(),
+          descrizione: d.descrizione.toUpperCase()
+        })), // Aggiorniamo l'array di descrizioni
       });
 
       onHide(); // Chiude il modal dopo l'aggiornamento
@@ -67,7 +119,7 @@ export function EditPezzoDiRicambio({ pezzo, show, onHide }) {
             <Form.Label>Nome Pezzo di Ricambio (non modificabile)</Form.Label>
             <Form.Control
               type="text"
-              value={pezzo.nomePezzoDiRicambio}
+              value={pezzo}
               disabled // Rende il campo non modificabile
             />
           </Form.Group>
@@ -78,13 +130,13 @@ export function EditPezzoDiRicambio({ pezzo, show, onHide }) {
             <Form.Control
               type="text"
               value={categoria}
-              onChange={(e) => setCategoria(e.target.value)}
+              onChange={handleCategoriaChange}
               placeholder="Inserisci la categoria"
             />
           </Form.Group>
 
           {/* Stato e descrizione */}
-          <div className="scroll-container" style={{ maxHeight: "200px", overflowY: "auto" }}>
+          <div className="scroll-container">
             {descrizioni.map((descrizioneItem, index) => (
               <Row key={index} className="mb-3">
                 <Col>

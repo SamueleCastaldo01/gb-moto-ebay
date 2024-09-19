@@ -155,21 +155,26 @@ function Homepage() {
                 pezziDiRicambio={pezziDiRicambio}
                 setModalShow={setModalShow}
                 setModalShowEdit={setModalShowEdit}
+                setNomePezzoRicambioSel={setNomePezzoRicambioSel}
               />
             </div>
           )}
 
+        {modalShow &&
           <InsPezzoDiRicambio
             show={modalShow}
             fetchPezzoDiRicambio={fetchPezzoDiRicambio}
             onHide={() => setModalShow(false)}
           />
+        }
 
+        {modalShowEdit &&
           <EditPezzoDiRicambio
           pezzo={nomePezzoRicambioSel}
           show={modalShowEdit}
           onHide={() => setModalShowEdit(false)}
           />
+        }
 
         </div>
       </motion.div>
