@@ -204,12 +204,16 @@ button:active {
   color: rgb(255, 122, 98);
 }
 
-.scroll-container {
+.scroll-container, .scroll-chiave {
   border-top: 1px solid black;
   padding-top: 10px;
   overflow-y: auto;
   overflow-x: hidden;
-  height: 400px;
+  height: 300px;
   scroll-behavior: smooth;
   will-change: transform; /* Ottimizza le performance dello scroll */
+}
+
+.scroll-chiave {
+  height: 120px;
 }

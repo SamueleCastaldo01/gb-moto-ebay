@@ -8,6 +8,7 @@ export function InsPezzoDiRicambio(props) {
   const [nomePezzoDiRicambio, setNomePezzoDiRicambio] = useState("");
   const [categoria, setCategoria] = useState("");
   const [descrizioni, setDescrizioni] = useState([{ stato: "", descrizione: "" }]);
+  const [paroleChiave, setParoleChiave] = useState([""]); // Stato per parole chiave
   const [errorMessage, setErrorMessage] = useState(null); // Stato per gestire gli errori
 
   // Funzione per gestire il cambiamento di stato o descrizione di un elemento
@@ -17,9 +18,27 @@ export function InsPezzoDiRicambio(props) {
     setDescrizioni(newDescrizioni);
   };
 
+  // Funzione per gestire il cambiamento delle parole chiave
+  const handleParoleChiaveChange = (index, value) => {
+    const newParoleChiave = [...paroleChiave];
+    newParoleChiave[index] = value.toUpperCase(); // Converti a uppercase
+    setParoleChiave(newParoleChiave);
+  };
+
   // Aggiunge un nuovo campo per stato + descrizione
   const addDescrizione = () => {
     setDescrizioni([...descrizioni, { stato: "", descrizione: "" }]);
+  };
+
+  // Aggiunge una nuova parola chiave
+  const addParolaChiave = () => {
+    setParoleChiave([...paroleChiave, ""]);
+  };
+
+  // Rimuove una parola chiave specifica
+  const removeParolaChiave = (index) => {
+    const newParoleChiave = paroleChiave.filter((_, i) => i !== index);
+    setParoleChiave(newParoleChiave);
   };
 
   // Rimuove un campo specifico
@@ -78,6 +97,7 @@ export function InsPezzoDiRicambio(props) {
       await addDoc(collection(db, "pezzoDiRicambioTab"), {
         nomePezzoDiRicambio: nomePezzoDiRicambio.toUpperCase(), // Converti a uppercase
         categoria: categoria.toUpperCase(), // Converti a uppercase
+        paroleChiave: paroleChiave.map(parola => parola.toUpperCase()), // Converti le parole chiave a uppercase
         descrizioni: descrizioni.map((item) => ({
           stato: item.stato.toUpperCase(), // Converti a uppercase
           descrizione: item.descrizione.toUpperCase(), // Converti a uppercase
@@ -89,6 +109,7 @@ export function InsPezzoDiRicambio(props) {
       setNomePezzoDiRicambio("");
       setCategoria("");
       setDescrizioni([{ stato: "", descrizione: "" }]);
+      setParoleChiave([""]); // Reset parole chiave
       props.onHide(); // Chiude il modal
       props.fetchPezziDiRicambio(); // Serve per aggiornare l'autocomplete
     } catch (error) {
@@ -116,6 +137,8 @@ export function InsPezzoDiRicambio(props) {
               {errorMessage}
             </Alert>
           )}
+
+          {/* Campo per il nome del pezzo di ricambio */}
           <Form.Group className="mb-3">
             <Form.Label>Nome Pezzo di Ricambio</Form.Label>
             <Form.Control
@@ -127,6 +150,39 @@ export function InsPezzoDiRicambio(props) {
             />
           </Form.Group>
 
+          {/* Campo per le parole chiave */}
+          <Form.Group className="mb-3">
+            <Form.Label>Parole Chiave Titolo</Form.Label>
+            <div className="scroll-chiave">
+            {paroleChiave.map((parola, index) => (
+              <Row key={index} className="mb-3">
+                <Col>
+                  <Form.Control
+                    type="text"
+                    value={parola}
+                    onChange={(e) => handleParoleChiaveChange(index, e.target.value)}
+                    placeholder="Inserisci una parola chiave"
+                  />
+                </Col>
+                <Col xs="auto" className="d-flex align-items-end">
+                  {index > 0 && (
+                    <Button
+                      variant="danger"
+                      onClick={() => removeParolaChiave(index)}
+                    >
+                      Rimuovi
+                    </Button>
+                  )}
+                </Col>
+              </Row>
+            ))}
+            </div>
+            <Button variant="primary" onClick={addParolaChiave}>
+              + Aggiungi Parola Chiave
+            </Button>
+          </Form.Group>
+
+          {/* Campo per la categoria */}
           <Form.Group className="mb-3">
             <Form.Label>Categoria</Form.Label>
             <Form.Control
@@ -137,6 +193,7 @@ export function InsPezzoDiRicambio(props) {
             />
           </Form.Group>
 
+          {/* Campo per le descrizioni */}
           <div className="scroll-container">
             {descrizioni.map((descrizioneItem, index) => (
               <Row key={index} className="mb-3">

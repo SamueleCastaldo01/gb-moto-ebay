@@ -7,6 +7,7 @@ import { doc, updateDoc, deleteDoc, query, where, getDocs, collection } from "fi
 export function EditPezzoDiRicambio({ pezzo, show, onHide, fetchPezziDiRicambio, setPezzo, updateState, setUpdateState }) {
   const [categoria, setCategoria] = useState("");
   const [descrizioni, setDescrizioni] = useState([{ stato: "", descrizione: "" }]);
+  const [paroleChiave, setParoleChiave] = useState([""]); // Stato per le parole chiave
   const [errorMessage, setErrorMessage] = useState(null);
   const [pezzoId, setPezzoId] = useState(null); // Stato per memorizzare l'ID del pezzo
   const [confirmDelete, setConfirmDelete] = useState(false); // Stato per la conferma di eliminazione
@@ -26,6 +27,7 @@ export function EditPezzoDiRicambio({ pezzo, show, onHide, fetchPezziDiRicambio,
           // Carica i dati del pezzo
           setCategoria(doc.data().categoria || "");
           setDescrizioni(doc.data().descrizioni || [{ stato: "", descrizione: "" }]);
+          setParoleChiave(doc.data().paroleChiave || [""]); // Carica le parole chiave esistenti
         }
       } catch (error) {
         console.error("Errore durante il recupero dei dati del pezzo: ", error);
@@ -48,6 +50,24 @@ export function EditPezzoDiRicambio({ pezzo, show, onHide, fetchPezziDiRicambio,
   // Funzione per gestire il cambiamento della categoria
   const handleCategoriaChange = (e) => {
     setCategoria(e.target.value.toUpperCase()); // Trasforma in uppercase
+  };
+
+  // Funzione per gestire il cambiamento delle parole chiave
+  const handleParoleChiaveChange = (index, value) => {
+    const newParoleChiave = [...paroleChiave];
+    newParoleChiave[index] = value.toUpperCase(); // Converti a uppercase
+    setParoleChiave(newParoleChiave);
+  };
+
+  // Aggiunge una nuova parola chiave
+  const addParolaChiave = () => {
+    setParoleChiave([...paroleChiave, ""]);
+  };
+
+  // Rimuove una parola chiave specifica
+  const removeParolaChiave = (index) => {
+    const newParoleChiave = paroleChiave.filter((_, i) => i !== index);
+    setParoleChiave(newParoleChiave);
   };
 
   // Aggiunge un nuovo campo per stato + descrizione
@@ -96,21 +116,18 @@ export function EditPezzoDiRicambio({ pezzo, show, onHide, fetchPezziDiRicambio,
           stato: d.stato.toUpperCase(),
           descrizione: d.descrizione.toUpperCase()
         })), // Aggiorniamo l'array di descrizioni
+        paroleChiave: paroleChiave.map(parola => parola.toUpperCase()), // Aggiorna le parole chiave
       });
 
-      setUpdateState(updateState +1)
+      setUpdateState(updateState + 1);
       onHide(); // Chiude il modal dopo l'aggiornamento
       fetchPezziDiRicambio(); // Aggiorna l'elenco dei pezzi di ricambio
-
-      // Chiama la funzione di aggiornamento per aggiornare gli stati del ricambio
-
 
     } catch (error) {
       console.error("Errore durante l'aggiornamento dei dati su Firebase: ", error);
       setErrorMessage("Errore durante l'aggiornamento dei dati.");
     }
   };
-
 
   // Funzione per gestire l'eliminazione del pezzo di ricambio
   const handleDelete = async () => {
@@ -122,9 +139,9 @@ export function EditPezzoDiRicambio({ pezzo, show, onHide, fetchPezziDiRicambio,
         const pezzoRef = doc(db, "pezzoDiRicambioTab", pezzoId); // Riferimento al documento da eliminare
         await deleteDoc(pezzoRef);
 
-        setPezzo("");  //autocomplete in questo modo dovrebbe essere vuoto
+        setPezzo("");  // autocomplete in questo modo dovrebbe essere vuoto
         onHide(); // Chiude il modal dopo l'eliminazione
-        fetchPezziDiRicambio()  //aggiorna l'autocomplete
+        fetchPezziDiRicambio();  // aggiorna l'autocomplete
       } catch (error) {
         console.error("Errore durante l'eliminazione dei dati su Firebase: ", error);
         setErrorMessage("Errore durante l'eliminazione dei dati.");
@@ -141,7 +158,7 @@ export function EditPezzoDiRicambio({ pezzo, show, onHide, fetchPezziDiRicambio,
         <Modal.Body>
           <Form>
             {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-            
+
             {/* Campo non modificabile */}
             <Form.Group className="mb-3">
               <Form.Label>Nome Pezzo di Ricambio (non modificabile)</Form.Label>
@@ -161,6 +178,38 @@ export function EditPezzoDiRicambio({ pezzo, show, onHide, fetchPezziDiRicambio,
                 onChange={handleCategoriaChange}
                 placeholder="Inserisci la categoria"
               />
+            </Form.Group>
+
+            {/* Parole chiave */}
+            <Form.Group className="mb-3">
+              <Form.Label>Parole Chiave Titolo</Form.Label>
+              <div className="scroll-chiave">
+              {paroleChiave.map((parola, index) => (
+                <Row key={index} className="mb-3">
+                  <Col>
+                    <Form.Control
+                      type="text"
+                      value={parola}
+                      onChange={(e) => handleParoleChiaveChange(index, e.target.value)}
+                      placeholder="Inserisci una parola chiave"
+                    />
+                  </Col>
+                  <Col xs="auto" className="d-flex align-items-end">
+                    {index > 0 && (
+                      <Button
+                        variant="danger"
+                        onClick={() => removeParolaChiave(index)}
+                      >
+                        Rimuovi
+                      </Button>
+                    )}
+                  </Col>
+                </Row>
+              ))}
+              </div>
+              <Button variant="primary" onClick={addParolaChiave}>
+                + Aggiungi Parola Chiave
+              </Button>
             </Form.Group>
 
             {/* Stato e descrizione */}
