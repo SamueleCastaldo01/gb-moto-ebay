@@ -8,6 +8,7 @@ import NomeModelloI from "../components/NomeModelloI";
 import AnnoDiProduzioneI from "../components/AnnoDiProduzioneI";
 import PezzoDiRicambioI from "../components/PezzoDiRicambio";
 import { InsPezzoDiRicambio } from "../components/InsPezzoRicambio";
+import { EditPezzoDiRicambio } from "../components/EditPezzoDiRicambio";
 
 function Homepage() {
   localStorage.setItem("naviBottom", 0);
@@ -18,10 +19,11 @@ function Homepage() {
   const [annoProduzione, setAnnoDiProduzione] = useState([]); //array con anno di produzione del modello
   const [idModello, setIdModello] = useState("");
   const [nomeModello, setNomeModello] = useState("");
-  const [nomePezzoRicambio, setNomePezzoRicambio] = useState("");
+  const [nomePezzoRicambioSel, setNomePezzoRicambioSel] = useState("");
   const [showAnnoProd, setShowAnnoProd] = useState(false);
   const [showPezzoRic, setShowPezzoRic] = useState(false);
   const [modalShow, setModalShow] = useState(false);
+  const [modalShowEdit, setModalShowEdit] = useState(false);
 
   // Funzione per recuperare tutti i modelli dal database Firestore e ordinarli
   //------------------------------------------------------------------
@@ -152,6 +154,7 @@ function Homepage() {
               <PezzoDiRicambioI
                 pezziDiRicambio={pezziDiRicambio}
                 setModalShow={setModalShow}
+                setModalShowEdit={setModalShowEdit}
               />
             </div>
           )}
@@ -161,6 +164,13 @@ function Homepage() {
             fetchPezzoDiRicambio={fetchPezzoDiRicambio}
             onHide={() => setModalShow(false)}
           />
+
+          <EditPezzoDiRicambio
+          pezzo={nomePezzoRicambioSel}
+          show={modalShowEdit}
+          onHide={() => setModalShowEdit(false)}
+          />
+
         </div>
       </motion.div>
     </>
