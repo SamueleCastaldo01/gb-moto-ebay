@@ -4,7 +4,7 @@ import { TextField, Button, Autocomplete } from "@mui/material";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazione Firebase
 
-function PezzoDiRicambioI({ annoProduzione, nomeModello, idModello, fetchAnnoProduzione }) {
+function PezzoDiRicambioI({ pezziDiRicambio, nomeModello, idModello, fetchAnnoProduzione, setModalShow }) {
   const [pezzoDiRicambio, setPezzoDiRicambio] = useState("");
   const [valoreSelezionato, setValoreSelezionato] = useState(""); // Per tenere traccia del valore selezionato
 
@@ -14,7 +14,7 @@ function PezzoDiRicambioI({ annoProduzione, nomeModello, idModello, fetchAnnoPro
 
   const isValidInput = () => {
     const pezzoDiRicambioUpperCase = pezzoDiRicambio.trim().toUpperCase();
-    return pezzoDiRicambioUpperCase !== "" && !annoProduzione.includes(pezzoDiRicambioUpperCase);
+    return pezzoDiRicambioUpperCase !== "" && !pezziDiRicambio.includes(pezzoDiRicambioUpperCase);
   };
 
 
@@ -22,7 +22,7 @@ function PezzoDiRicambioI({ annoProduzione, nomeModello, idModello, fetchAnnoPro
   const handleAddAnnoProd = async () => {
     const pezzoDiRicambioUpperCase = pezzoDiRicambio.trim().toUpperCase();
 
-    if (pezzoDiRicambioUpperCase !== "" && !annoProduzione.includes(pezzoDiRicambioUpperCase)) {
+    if (pezzoDiRicambioUpperCase !== "" && !pezziDiRicambio.includes(pezzoDiRicambioUpperCase)) {
       try {
         const docRef = await addDoc(collection(db, "pezzoDiRicambioTab"), {
           pezzoDiRicambio: pezzoDiRicambioUpperCase,
@@ -46,7 +46,7 @@ function PezzoDiRicambioI({ annoProduzione, nomeModello, idModello, fetchAnnoPro
       {/* Autocomplete */}
       <Autocomplete
         freeSolo
-        options={annoProduzione} // Passiamo i modelli come opzioni
+        options={pezziDiRicambio} // Passiamo i modelli come opzioni
         value={valoreSelezionato}
         onChange={(event, newValue) => setValoreSelezionato(newValue ? newValue.toUpperCase() : "")} // Aggiorna il valore selezionato in maiuscolo
         inputValue={pezzoDiRicambio}
@@ -72,19 +72,18 @@ function PezzoDiRicambioI({ annoProduzione, nomeModello, idModello, fetchAnnoPro
       />
 
       {/* Pulsante Aggiungi */}
-     
-        <Button
+      <Button
           variant="contained"
           color="primary"
           style={{ marginLeft: "20px" }} // Margine sinistro per spazio tra Autocomplete e pulsante
-          onClick={() => {}}
+          onClick={() => {setModalShow(true)}}
         >
-          Nuovo
+          Aggiungi ricambio
         </Button>
-    
 
+    
       {/* Pulsante Conferma */}
-      {annoProduzione.includes(pezzoDiRicambio.trim().toUpperCase()) && (
+      {pezziDiRicambio.includes(pezzoDiRicambio.trim().toUpperCase()) && (
         <Button
           variant="contained"
           color="primary"
@@ -93,6 +92,7 @@ function PezzoDiRicambioI({ annoProduzione, nomeModello, idModello, fetchAnnoPro
           Conferma
         </Button>
       )}
+      
     </div>
     </>
   );

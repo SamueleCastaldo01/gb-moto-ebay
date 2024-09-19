@@ -7,24 +7,30 @@ import { db } from "../firebase-config"; // Importa 'db' dalla tua configurazion
 import NomeModelloI from "../components/NomeModelloI";
 import AnnoDiProduzioneI from "../components/AnnoDiProduzioneI";
 import PezzoDiRicambioI from "../components/PezzoDiRicambio";
+import { InsPezzoDiRicambio } from "../components/InsPezzoRicambio";
 
 function Homepage() {
   localStorage.setItem("naviBottom", 0);
 
   let navigate = useNavigate();
   const [modelli, setModelli] = useState([]); // Stato per i modelli esistenti
+  const [pezziDiRicambio, setPezziDiRicambio] = useState([]);
   const [annoProduzione, setAnnoDiProduzione] = useState([]); //array con anno di produzione del modello
   const [idModello, setIdModello] = useState("");
   const [nomeModello, setNomeModello] = useState("");
+  const [nomePezzoRicambio, setNomePezzoRicambio] = useState("");
   const [showAnnoProd, setShowAnnoProd] = useState(false);
   const [showPezzoRic, setShowPezzoRic] = useState(false);
+  const [modalShow, setModalShow] = useState(false);
 
   // Funzione per recuperare tutti i modelli dal database Firestore e ordinarli
   //------------------------------------------------------------------
   const fetchModelli = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "nomeModelloTab"));
-      const modelliList = querySnapshot.docs.map((doc) => doc.data().nomeModello.toUpperCase());
+      const modelliList = querySnapshot.docs.map((doc) =>
+        doc.data().nomeModello.toUpperCase()
+      );
       // Ordina i modelli in ordine alfabetico
       const sortedModelli = modelliList.sort((a, b) => a.localeCompare(b));
       setModelli(sortedModelli); // Popola lo stato solo con i nomi dei modelli
@@ -41,25 +47,52 @@ function Homepage() {
         collection(db, "annoDiProduzioneTab"),
         where("nomeModello", "==", nomeModello) // Filtra per nomeModello
       );
-  
+
       // Esegui la query
       const querySnapshot = await getDocs(q);
-      
+
       const modelliList = querySnapshot.docs.map((doc) => {
         const data = doc.data();
         return data.annoDiProduzione ? data.annoDiProduzione.toUpperCase() : ""; // Assicura che annoDiProduzione sia presente
       });
-  
+
       // Ordina i modelli in ordine alfabetico
       const sortedAnnoDiProduzione = modelliList.sort((a, b) =>
         a.localeCompare(b)
       );
-  
+
       setAnnoDiProduzione(sortedAnnoDiProduzione); // Popola lo stato con i modelli ordinati
     } catch (error) {
       console.error("Errore nel recupero dei modelli: ", error);
     }
   };
+
+    //------------------------------------------------------------------
+    const fetchPezzoDiRicambio = async () => {
+      try {
+        // Crea una query per filtrare per nomeModello
+        const q = query(
+          collection(db, "pezzoDiRicambioTab")
+        );
+  
+        // Esegui la query
+        const querySnapshot = await getDocs(q);
+  
+        const modelliList = querySnapshot.docs.map((doc) => {
+          const data = doc.data();
+          return data.nomePezzoDiRicambio ? data.nomePezzoDiRicambio.toUpperCase() : ""; // Assicura che annoDiProduzione sia presente
+        });
+  
+        // Ordina i modelli in ordine alfabetico
+        const sorteNomePezzoRic = modelliList.sort((a, b) =>
+          a.localeCompare(b)
+        );
+  
+        setPezziDiRicambio(sorteNomePezzoRic); // Popola lo stato con i modelli ordinati
+      } catch (error) {
+        console.error("Errore nel recupero dei modelli: ", error);
+      }
+    };
   //------------------------------------------------------------------
   useEffect(() => {
     fetchModelli();
@@ -67,8 +100,11 @@ function Homepage() {
 
   useEffect(() => {
     fetchAnnoProduzione();
-  },[nomeModello])
+  }, [nomeModello]);
 
+  useEffect(() => {
+    fetchPezzoDiRicambio();
+  }, [nomePezzoRicambio]);
 
   return (
     <>
@@ -111,18 +147,24 @@ function Homepage() {
             </div>
           )}
 
-  {showPezzoRic && (
+          {showPezzoRic && (
             <div className="mt-5">
               <PezzoDiRicambioI
-                annoProduzione={annoProduzione}
+                pezziDiRicambio={pezziDiRicambio}
                 nomeModello={nomeModello}
                 idModello={idModello}
                 fetchAnnoProduzione={fetchAnnoProduzione}
                 setAnnoDiProduzione={setAnnoDiProduzione}
+                setModalShow={setModalShow}
                 setShowAnnoProd={setShowAnnoProd}
               />
             </div>
           )}
+
+          <InsPezzoDiRicambio
+            show={modalShow}
+            onHide={() => setModalShow(false)}
+          />
         </div>
       </motion.div>
     </>

@@ -203,3 +203,13 @@ button:active {
   padding-bottom: 10px;
   color: rgb(255, 122, 98);
 }
+
+.scroll-container {
+  border-top: 1px solid black;
+  padding-top: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 400px;
+  scroll-behavior: smooth;
+  will-change: transform; /* Ottimizza le performance dello scroll */
+}
