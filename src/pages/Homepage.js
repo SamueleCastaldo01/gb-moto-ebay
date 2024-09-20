@@ -196,6 +196,7 @@ function Homepage() {
             nomePezzoRicambioSel={nomePezzoRicambioSel}
             nomeModello={nomeModello}
             annoProduzione={annoDiProduzioneSel}
+            statoSel={statoSel}
           />
 
 

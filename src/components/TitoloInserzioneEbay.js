@@ -10,6 +10,7 @@ export function TitoloInserzioneEbay({
   nomePezzoRicambioSel,
   nomeModello,
   annoProduzione,
+  statoSel
 }) {
   const [paroleChiave, setParoleChiave] = useState([]);
   const [titolo, setTitolo] = useState("");
@@ -29,10 +30,7 @@ export function TitoloInserzioneEbay({
           setParoleChiave(doc.data().paroleChiave || []);
         }
       } catch (error) {
-        console.error(
-          "Errore durante il recupero delle parole chiave: ",
-          error
-        );
+        console.error("Errore durante il recupero delle parole chiave: ", error);
       }
     }
   };
@@ -44,64 +42,48 @@ export function TitoloInserzioneEbay({
   useEffect(() => {
     // Funzione per generare il titolo basato sui dati forniti
     const generateTitolo = () => {
-      let yearsExpanded = [];
-      let startYear, endYear;
-
-      if (annoProduzione) {
-        // Rimuove il trattino e gestisce gli anni
-        const yearParts = annoProduzione.split(' - ');
-        startYear = parseInt(yearParts[0].trim(), 10);
-        endYear = parseInt(yearParts[1].trim(), 10);
-
-        if (!isNaN(startYear) && !isNaN(endYear)) {
-          // Aggiunge gli anni intermedi
-          for (let year = startYear + 1; year < endYear; year++) {
-            yearsExpanded.push(year);
-          }
-          
-          // Se ci sono anni intermedi, aggiungi l'anno finale solo una volta
-          if (yearsExpanded.length > 0) {
-            yearsExpanded = [startYear, ...yearsExpanded, endYear];
-          } else {
-            yearsExpanded = [startYear, endYear];
-          }
+        let yearsExpanded = [];
+        let startYear, endYear;
+        let baseTitle = "";
+    
+        if (annoProduzione) {
+            // Rimuove il trattino e gestisce gli anni
+            const yearParts = annoProduzione.split(' - ');
+            startYear = parseInt(yearParts[0].trim(), 10);
+            endYear = parseInt(yearParts[1].trim(), 10);
+    
+            if (!isNaN(startYear) && !isNaN(endYear)) {
+                for (let year = startYear + 1; year < endYear; year++) {
+                    yearsExpanded.push(year);
+                }
+                yearsExpanded = [startYear, ...yearsExpanded, endYear];
+            }
         }
-      }
-
-      // Funzione per formattare l'array di anni come stringa
-      const formatYears = (yearsArr) => {
-        if (yearsArr.length === 2) {
-          return `${yearsArr[0]} AL ${yearsArr[1]}`;
-        } else if (yearsArr.length > 2) {
-          // Mostra tutti gli anni intermedi con "AL" solo se ci sono anni da aggiungere
-          return `${yearsArr.slice(0, -1).join(' ')} AL ${yearsArr[yearsArr.length - 1]}`;
+        console.log(yearsExpanded);
+    
+        if (statoSel && statoSel.startsWith('*')) {
+            baseTitle = `${nomePezzoRicambioSel || ''} ${paroleChiave.join(" ")} ${nomeModello || ''} ${startYear} ${endYear} ${statoSel}`;
+        } else {
+            baseTitle = `${nomePezzoRicambioSel || ''} ${paroleChiave.join(" ")} ${nomeModello || ''} ${startYear} ${endYear}`;
         }
-        return yearsArr.join(' ');
-      };
-
-      // Crea il titolo base
-      let baseTitle = `${nomePezzoRicambioSel} ${paroleChiave.join(" ")} ${nomeModello}`;
-      let yearString = formatYears(yearsExpanded);
-      
-      // Aggiungi "ANNO" se c'è spazio sufficiente
-      if (baseTitle.length + 5 + yearString.length <= 80) {
-        baseTitle = `${baseTitle} ANNO`;
-      }
-
-      // Aggiungi gli anni formattati
-      let finalTitle = `${baseTitle} ${yearString}`.trim();
-
-      // Limita la lunghezza a 80 caratteri
-      if (finalTitle.length > 80) {
-        finalTitle = finalTitle.slice(0, 80); // Tronca il titolo a 80 caratteri
-      }
-
-      return finalTitle;
+    
+        let baseLength = baseTitle.length; // Rimuovere le parentesi
+    
+        if (baseLength < 80) {
+            // Logica per gestire il caso quando la lunghezza è minore di 80
+        }
+    
+        // Assicurati di restituire un titolo finale
+        let finalTitle = baseTitle; // Imposta un titolo finale di default
+    
+        return finalTitle;
     };
-
+  
     setTitolo(generateTitolo());
-  }, [nomePezzoRicambioSel, paroleChiave, nomeModello, annoProduzione]);
+  }, [nomePezzoRicambioSel, paroleChiave, nomeModello, annoProduzione, statoSel]);
 
+
+  //------------------------------------------------------------------
   // Funzione per copiare il titolo negli appunti
   const handleCopy = () => {
     navigator.clipboard.writeText(titolo).then(() => {

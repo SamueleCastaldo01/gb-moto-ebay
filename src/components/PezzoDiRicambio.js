@@ -1,5 +1,4 @@
-// ModelloInput.js
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { TextField, Button, Autocomplete } from "@mui/material";
 import { StatoRicambio } from "./StatoRicambio";
 
@@ -15,17 +14,19 @@ function PezzoDiRicambioI({
 }) {
   const [pezzoDiRicambio, setPezzoDiRicambio] = useState("");
 
+  const isOptionEqualToValue = (option, value) => {
+    // Controllo che sia un valore valido e faccio un confronto case-insensitive
+    return option?.toUpperCase() === value?.toUpperCase();
+  };
+
   const handleInputChange = (event, newInputValue) => {
-    setPezzoDiRicambio(newInputValue.trim() ? newInputValue.toUpperCase() : "");
+    setPezzoDiRicambio(newInputValue ? newInputValue.toUpperCase() : "");
   };
 
   const handleUpdateStati = () => {
-    // Quando questo viene chiamato, forza l'aggiornamento degli stati nel componente StatoRicambio
-    setNomePezzoRicambioSel("");
+    setNomePezzoRicambioSel(""); // Reset temporaneo
     setNomePezzoRicambioSel(nomePezzoDiRicambioSel); // Forza il refresh degli stati
   };
-
-  //--------------------------------------------------------------------------------
 
   return (
     <>
@@ -33,19 +34,20 @@ function PezzoDiRicambioI({
         {/* Autocomplete */}
         <Autocomplete
           freeSolo
-          options={pezziDiRicambio} // Passiamo i modelli come opzioni
-          value={nomePezzoDiRicambioSel}
+          options={pezziDiRicambio}
+          isOptionEqualToValue={isOptionEqualToValue}
+          value={nomePezzoDiRicambioSel || ""} // Valore predefinito per evitare `null`
           onChange={(event, newValue) => {
             setNomePezzoRicambioSel(newValue ? newValue.toUpperCase() : "");
-          }} // Aggiorna il valore selezionato in maiuscolo
+          }}
           inputValue={pezzoDiRicambio}
-          onInputChange={handleInputChange} // Aggiorna l'input mentre si digita e converte in maiuscolo
+          onInputChange={handleInputChange}
           renderInput={(params) => (
             <TextField
               {...params}
               label="Pezzo di ricambio"
               variant="outlined"
-              style={{ width: "300px", textTransform: "uppercase" }} // Imposta il testo del TextField in maiuscolo
+              style={{ width: "300px", textTransform: "uppercase" }}
             />
           )}
           filterOptions={(options, params) => {
@@ -53,10 +55,8 @@ function PezzoDiRicambioI({
             const filtered = options.filter((option) =>
               option.toLowerCase().includes(inputValueUpperCase.toLowerCase())
             );
-            if (
-              inputValueUpperCase &&
-              !filtered.includes(inputValueUpperCase)
-            ) {
+            // Se l'input non è incluso nelle opzioni, lo aggiunge
+            if (inputValueUpperCase && !filtered.includes(inputValueUpperCase)) {
               filtered.push(inputValueUpperCase);
             }
             return filtered;
@@ -67,7 +67,7 @@ function PezzoDiRicambioI({
         <Button
           variant="contained"
           color="warning"
-          style={{ marginLeft: "20px" }} // Margine sinistro per spazio tra Autocomplete e pulsante
+          style={{ marginLeft: "20px" }}
           onClick={() => {
             setModalShow(true);
           }}
@@ -75,7 +75,7 @@ function PezzoDiRicambioI({
           Aggiungi
         </Button>
 
-        {/* Pulsante Conferma */}
+        {/* Pulsante Modifica e Conferma */}
         {pezziDiRicambio.includes(pezzoDiRicambio.trim().toUpperCase()) && (
           <>
             <Button
@@ -91,7 +91,7 @@ function PezzoDiRicambioI({
             <Button
               variant="contained"
               color="success"
-              style={{ marginLeft: "20px" }} // Margine sinistro per spazio tra Autocomplete e pulsante
+              style={{ marginLeft: "20px" }}
             >
               Conferma
             </Button>
