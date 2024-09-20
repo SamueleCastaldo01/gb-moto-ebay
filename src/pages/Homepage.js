@@ -10,6 +10,7 @@ import PezzoDiRicambioI from "../components/PezzoDiRicambio";
 import { InsPezzoDiRicambio } from "../components/InsPezzoRicambio";
 import { EditPezzoDiRicambio } from "../components/EditPezzoDiRicambio";
 import { TitoloInserzioneEbay } from "../components/TitoloInserzioneEbay";
+import { InserzioneTitoloSubito } from "../components/InserzioneTitoloSubito";
 
 function Homepage() {
   localStorage.setItem("naviBottom", 0);
@@ -73,32 +74,30 @@ function Homepage() {
     }
   };
 
-    //------------------------------------------------------------------
-    const fetchPezziDiRicambio = async () => {
-      try {
-        // Crea una query per filtrare per nomeModello
-        const q = query(
-          collection(db, "pezzoDiRicambioTab")
-        );
-  
-        // Esegui la query
-        const querySnapshot = await getDocs(q);
-  
-        const modelliList = querySnapshot.docs.map((doc) => {
-          const data = doc.data();
-          return data.nomePezzoDiRicambio ? data.nomePezzoDiRicambio.toUpperCase() : ""; // Assicura che annoDiProduzione sia presente
-        });
-  
-        // Ordina i modelli in ordine alfabetico
-        const sorteNomePezzoRic = modelliList.sort((a, b) =>
-          a.localeCompare(b)
-        );
-  
-        setPezziDiRicambio(sorteNomePezzoRic); // Popola lo stato con i modelli ordinati
-      } catch (error) {
-        console.error("Errore nel recupero dei modelli: ", error);
-      }
-    };
+  //------------------------------------------------------------------
+  const fetchPezziDiRicambio = async () => {
+    try {
+      // Crea una query per filtrare per nomeModello
+      const q = query(collection(db, "pezzoDiRicambioTab"));
+
+      // Esegui la query
+      const querySnapshot = await getDocs(q);
+
+      const modelliList = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return data.nomePezzoDiRicambio
+          ? data.nomePezzoDiRicambio.toUpperCase()
+          : ""; // Assicura che annoDiProduzione sia presente
+      });
+
+      // Ordina i modelli in ordine alfabetico
+      const sorteNomePezzoRic = modelliList.sort((a, b) => a.localeCompare(b));
+
+      setPezziDiRicambio(sorteNomePezzoRic); // Popola lo stato con i modelli ordinati
+    } catch (error) {
+      console.error("Errore nel recupero dei modelli: ", error);
+    }
+  };
   //------------------------------------------------------------------
   useEffect(() => {
     fetchModelli();
@@ -169,37 +168,41 @@ function Homepage() {
             </div>
           )}
 
-        {modalShow &&
-          <InsPezzoDiRicambio
-            show={modalShow}
-            fetchPezziDiRicambio={fetchPezziDiRicambio}
-            setNomePezzoRicambioSel={setNomePezzoRicambioSel}
-            onHide={() => setModalShow(false)}
-          />
-        }
+          {modalShow && (
+            <InsPezzoDiRicambio
+              show={modalShow}
+              fetchPezziDiRicambio={fetchPezziDiRicambio}
+              setNomePezzoRicambioSel={setNomePezzoRicambioSel}
+              onHide={() => setModalShow(false)}
+            />
+          )}
 
-        {modalShowEdit &&
-          <EditPezzoDiRicambio
-          pezzo={nomePezzoRicambioSel}
-          setPezzo={setNomePezzoRicambioSel}
-          show={modalShowEdit}
-          updateState={updateState}
-          setUpdateState={setUpdateState}
-          fetchPezziDiRicambio={fetchPezziDiRicambio}
-          onHide={() => setModalShowEdit(false)}
-          />
-        }
+          {modalShowEdit && (
+            <EditPezzoDiRicambio
+              pezzo={nomePezzoRicambioSel}
+              setPezzo={setNomePezzoRicambioSel}
+              show={modalShowEdit}
+              updateState={updateState}
+              setUpdateState={setUpdateState}
+              fetchPezziDiRicambio={fetchPezziDiRicambio}
+              onHide={() => setModalShowEdit(false)}
+            />
+          )}
 
-
-        {/**OUTPUT++++++++++++++++++++++++++++++++++++++++++++ */}
-        <TitoloInserzioneEbay
+          {/**OUTPUT++++++++++++++++++++++++++++++++++++++++++++ */}
+          <TitoloInserzioneEbay
             nomePezzoRicambioSel={nomePezzoRicambioSel}
             nomeModello={nomeModello}
             annoProduzione={annoDiProduzioneSel}
             statoSel={statoSel}
           />
 
-
+          <InserzioneTitoloSubito
+            nomePezzoRicambioSel={nomePezzoRicambioSel}
+            nomeModello={nomeModello}
+            annoProduzione={annoDiProduzioneSel}
+            statoSel={statoSel}
+          />
         </div>
       </motion.div>
     </>
