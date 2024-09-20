@@ -69,6 +69,7 @@ function ModelloInput({
     <div className="d-flex" style={{ alignItems: "center" }}>
       {/* Autocomplete */}
       <Autocomplete
+      style={{ fontSize: "15px"}}
         freeSolo
         options={modelli} // Passiamo i modelli come opzioni
         value={valoreSelezionato}
@@ -84,7 +85,7 @@ function ModelloInput({
             {...params}
             label="Nome Modello"
             variant="outlined"
-            style={{ width: "300px", textTransform: "uppercase" }} // Imposta il testo del TextField in maiuscolo
+            style={{fontSize: "10px", width: "300px", textTransform: "uppercase" }} // Imposta il testo del TextField in maiuscolo
           />
         )}
         filterOptions={(options, params) => {
