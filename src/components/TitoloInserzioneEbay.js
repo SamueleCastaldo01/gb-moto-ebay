@@ -77,7 +77,7 @@ export function TitoloInserzioneEbay({
                 const stringYear = year.toString();
                 
                 if (index !== 0 && index !== (yearsExpanded.length - 1)) {
-                    if ((stringYear.length + 1 + intermYear.length + baseLength) <= 80) { //Devo gestire meglio il controllo
+                    if ((stringYear.length + 1 + intermYear.length + baseLength) <= (80 - stringYear.length)) {
                         intermYear += " " + year;
                     } else {
                         intermYear += " AL";
