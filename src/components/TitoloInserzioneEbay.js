@@ -122,15 +122,15 @@ export function TitoloInserzioneEbay({
           <img className="ms-1" style={{ width: "50px" }} src="logo-ebay.png" alt="eBay Logo" />
         </div>
 
-        <div className="d-flex align-items-center gap-1">
+        <div className="d-flex align-items-top gap-1">
           <div>
             <p
               className="p-2 rounded-3"
-              style={{ margin: 0, border: "1px solid gray", width: "calc(100% - 150px)" }} // Aggiunto un width per il contenitore del titolo
+              style={{ margin: 0, border: "1px solid gray" }} // Aggiunto un width per il contenitore del titolo
             >
               {titolo}
             </p>
-            <p className="text-end" style={{ margin: 0 }}>
+            <p className="text-end" style={{ margin: 0, fontSize: "14px" }}>
               <strong>Caratteri totali:</strong> {titolo.length}/<b>80</b>
             </p>
           </div>
@@ -140,7 +140,6 @@ export function TitoloInserzioneEbay({
             color="primary"
             startIcon={<ContentCopyIcon />} // Icona di copia
             onClick={handleCopy}
-            style={{ height: 'fit-content' }} // Altezza del bottone
           >
             Copia Titolo
           </Button>
