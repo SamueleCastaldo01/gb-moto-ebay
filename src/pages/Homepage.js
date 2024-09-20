@@ -11,6 +11,7 @@ import { InsPezzoDiRicambio } from "../components/InsPezzoRicambio";
 import { EditPezzoDiRicambio } from "../components/EditPezzoDiRicambio";
 import { TitoloInserzioneEbay } from "../components/TitoloInserzioneEbay";
 import { InserzioneTitoloSubito } from "../components/InserzioneTitoloSubito";
+import { DettagliPezzoDiRicambio } from "../components/DettagliPezzoDiRicambio";
 
 function Homepage() {
   localStorage.setItem("naviBottom", 0);
@@ -201,6 +202,11 @@ function Homepage() {
             nomePezzoRicambioSel={nomePezzoRicambioSel}
             nomeModello={nomeModello}
             annoProduzione={annoDiProduzioneSel}
+            statoSel={statoSel}
+          />
+
+          <DettagliPezzoDiRicambio
+            nomePezzoDiRicambio={nomePezzoRicambioSel}
             statoSel={statoSel}
           />
         </div>
