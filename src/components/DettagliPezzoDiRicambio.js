@@ -55,9 +55,10 @@ export function DettagliPezzoDiRicambio({ nomePezzoDiRicambio, statoSel }) {
   return (
     <div className="detagli-pezzo mt-4" style={{ textAlign: "left" }}>
       <div>
-        <h5>
-          <b>Categoria</b>
-        </h5>
+      <div className="d-flex mb-2">
+          <h5 style={{ margin: 0 }}>Categoria</h5>
+          <img className="ms-1" style={{ width: "50px" }} src="logo-ebay.png" alt="eBay Logo" />
+        </div>
         <div className="d-flex align-items-center">
           <p
             className="rounded-3 p-2 mb-0"
@@ -77,9 +78,10 @@ export function DettagliPezzoDiRicambio({ nomePezzoDiRicambio, statoSel }) {
         </div>
 
         <div className="mt-3">
-          <h5>
-            <b>Descrizioni:</b>
-          </h5>
+        <div className="d-flex mb-2">
+          <h5 style={{ margin: 0 }}>Descrizione </h5>
+          <img className="ms-1" style={{ width: "50px" }} src="logo-ebay.png" alt="eBay Logo" />
+        </div>
           {descrizioni.length > 0 ? (
             <>
               {descrizioni.map((desc, index) => (

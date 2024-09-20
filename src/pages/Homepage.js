@@ -129,7 +129,7 @@ function Homepage() {
       >
         <div
           className="container"
-          style={{ textAlign: "center", marginTop: "160px" }}
+          style={{ textAlign: "center", marginTop: "90px" }}
         >
           <NomeModelloI
             modelli={modelli}
