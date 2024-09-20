@@ -209,11 +209,11 @@ button:active {
   padding-top: 10px;
   overflow-y: auto;
   overflow-x: hidden;
-  height: 300px;
+  height: 250px;
   scroll-behavior: smooth;
   will-change: transform; /* Ottimizza le performance dello scroll */
 }
 
 .scroll-chiave {
-  height: 120px;
+  height: 100px;
 }
