@@ -45,7 +45,10 @@ export function TitoloInserzioneEbay({
         let yearsExpanded = [];
         let startYear, endYear;
         let baseTitle = "";
+        let intermYear= "";
+        let finalTitle = "";
     
+        //mi consente di mettere l'intervallo all'interno di un array
         if (annoProduzione) {
             // Rimuove il trattino e gestisce gli anni
             const yearParts = annoProduzione.split(' - ');
@@ -59,7 +62,6 @@ export function TitoloInserzioneEbay({
                 yearsExpanded = [startYear, ...yearsExpanded, endYear];
             }
         }
-        console.log(yearsExpanded);
     
         if (statoSel && statoSel.startsWith('*')) {
             baseTitle = `${nomePezzoRicambioSel || ''} ${paroleChiave.join(" ")} ${nomeModello || ''} ${startYear} ${endYear} ${statoSel}`;
@@ -70,11 +72,28 @@ export function TitoloInserzioneEbay({
         let baseLength = baseTitle.length; // Rimuovere le parentesi
     
         if (baseLength < 80) {
-            // Logica per gestire il caso quando la lunghezza è minore di 80
+            for (let index = 0; index < yearsExpanded.length; index++) {
+                const year = yearsExpanded[index];
+                const stringYear = year.toString();
+                
+                if (index !== 0 && index !== (yearsExpanded.length - 1)) {
+                    if ((stringYear.length + 1 + intermYear.length + baseLength) <= 80) { //Devo gestire meglio il controllo
+                        intermYear += " " + year;
+                    } else {
+                        intermYear += " AL";
+                        break;
+                    }
+                }
+            }
         }
+        console.log(intermYear)
     
         // Assicurati di restituire un titolo finale
-        let finalTitle = baseTitle; // Imposta un titolo finale di default
+        if (statoSel && statoSel.startsWith('*')) {
+            finalTitle = `${nomePezzoRicambioSel || ''} ${paroleChiave.join(" ")} ${nomeModello || ''} ${startYear} ${intermYear} ${endYear} ${statoSel}`;
+        } else {
+            finalTitle = `${nomePezzoRicambioSel || ''} ${paroleChiave.join(" ")} ${nomeModello || ''} ${startYear} ${intermYear} ${endYear}`;
+        }
     
         return finalTitle;
     };
