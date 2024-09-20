@@ -115,7 +115,7 @@ function Homepage() {
   return (
     <>
       {/**************NAVBAR MOBILE*************************************** */}
-      <div className="navMobile row">
+      <div className="navMobile row" style={{zIndex: "99"}}>
         <div className="col-2"></div>
         <div className="col" style={{ padding: 0 }}>
           <p className="navText"> GB Motoricambi Ebay </p>
@@ -129,7 +129,7 @@ function Homepage() {
       >
         <div
           className="container"
-          style={{ textAlign: "center", marginTop: "90px" }}
+          style={{ textAlign: "center", marginTop: "90px", marginBottom: "200px" }}
         >
           <NomeModelloI
             modelli={modelli}
